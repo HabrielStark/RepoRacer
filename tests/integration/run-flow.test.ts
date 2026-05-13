@@ -22,7 +22,7 @@ describe("RepoRacer integration flow", () => {
     config.baselineCheck = false;
     await fs.writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`, "utf8");
 
-    expect(configPath).toBe(path.join(repo.root, ".reporacer", "config.json"));
+    await expectSamePath(configPath, path.join(repo.root, ".reporacer", "config.json"));
 
     const selected = await selectTasks({ cwd: repo.root, maxTasks: 1 });
     expect(selected.tasks).toHaveLength(1);
@@ -57,7 +57,7 @@ describe("RepoRacer integration flow", () => {
     expect(sourceText).toBe("fixed\n");
 
     const regenerated = await regenerateReport(repo.root);
-    expect(regenerated).toBe(reportPath);
+    await expectSamePath(regenerated, reportPath);
 
     const ciPath = await generateCiTemplate(repo.root);
     const ci = await fs.readFile(ciPath, "utf8");
@@ -245,7 +245,8 @@ describe("RepoRacer integration flow", () => {
       agents: ["custom", "fake-success", "fake-noop"],
       maxTasks: 1,
       evaluationMode: "hidden-target-tests",
-      baselineCheck: true
+      baselineCheck: true,
+      parallelAgents: 1
     });
 
     const custom = summary.results.find((result) => result.agentName === "custom");
@@ -300,4 +301,8 @@ async function exists(filePath: string): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+async function expectSamePath(actual: string, expected: string): Promise<void> {
+  expect(await fs.realpath(actual)).toBe(await fs.realpath(expected));
 }
