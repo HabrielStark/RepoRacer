@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": "."
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts", "vitest.config.ts", "docs/.vitepress/config.mts"],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "coverage",
+    ".reporacer",
+    ".reporacer-demo-site",
+    "docs/.vitepress/dist",
+    "docs/api",
+    "examples/buggy-todo-app/generated"
+  ]
+}

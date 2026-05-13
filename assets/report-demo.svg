@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="720" viewBox="0 0 1120 720" role="img" aria-label="RepoRacer report demo">
+  <rect width="1120" height="720" fill="#eef4fb"/>
+  <rect width="1120" height="220" fill="#0b1020"/>
+  <text x="72" y="84" fill="#8bd3ff" font-family="Inter,Segoe UI,sans-serif" font-size="22" font-weight="700">RepoRacer</text>
+  <text x="72" y="146" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="52" font-weight="700">Your git history is the benchmark.</text>
+  <rect x="72" y="260" width="210" height="112" rx="10" fill="#ffffff"/>
+  <rect x="306" y="260" width="210" height="112" rx="10" fill="#ffffff"/>
+  <rect x="540" y="260" width="210" height="112" rx="10" fill="#ffffff"/>
+  <rect x="774" y="260" width="210" height="112" rx="10" fill="#ffffff"/>
+  <text x="96" y="306" fill="#667085" font-family="Inter,Segoe UI,sans-serif" font-size="18">Winner</text>
+  <text x="96" y="346" fill="#0b1020" font-family="Inter,Segoe UI,sans-serif" font-size="30" font-weight="700">codex</text>
+  <text x="330" y="306" fill="#667085" font-family="Inter,Segoe UI,sans-serif" font-size="18">Tasks</text>
+  <text x="330" y="346" fill="#0b1020" font-family="Inter,Segoe UI,sans-serif" font-size="30" font-weight="700">10</text>
+  <text x="564" y="306" fill="#667085" font-family="Inter,Segoe UI,sans-serif" font-size="18">Agents</text>
+  <text x="564" y="346" fill="#0b1020" font-family="Inter,Segoe UI,sans-serif" font-size="30" font-weight="700">5</text>
+  <text x="798" y="306" fill="#667085" font-family="Inter,Segoe UI,sans-serif" font-size="18">Risk Flags</text>
+  <text x="798" y="346" fill="#0b1020" font-family="Inter,Segoe UI,sans-serif" font-size="30" font-weight="700">0</text>
+  <rect x="72" y="430" width="976" height="210" rx="10" fill="#ffffff"/>
+  <text x="100" y="482" fill="#0b1020" font-family="Inter,Segoe UI,sans-serif" font-size="24" font-weight="700">Leaderboard</text>
+  <line x1="100" y1="520" x2="1016" y2="520" stroke="#d9e2ef"/>
+  <text x="100" y="562" fill="#667085" font-family="Inter,Segoe UI,sans-serif" font-size="18">Agent</text>
+  <text x="350" y="562" fill="#667085" font-family="Inter,Segoe UI,sans-serif" font-size="18">Solved</text>
+  <text x="560" y="562" fill="#667085" font-family="Inter,Segoe UI,sans-serif" font-size="18">Avg Score</text>
+  <text x="800" y="562" fill="#667085" font-family="Inter,Segoe UI,sans-serif" font-size="18">Tests</text>
+  <text x="100" y="610" fill="#0b1020" font-family="Inter,Segoe UI,sans-serif" font-size="20" font-weight="700">codex</text>
+  <text x="350" y="610" fill="#0b1020" font-family="Inter,Segoe UI,sans-serif" font-size="20">8/10</text>
+  <text x="560" y="610" fill="#0b1020" font-family="Inter,Segoe UI,sans-serif" font-size="20">87</text>
+  <text x="800" y="610" fill="#0b1020" font-family="Inter,Segoe UI,sans-serif" font-size="20">90%</text>
+</svg>

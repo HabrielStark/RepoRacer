@@ -1,0 +1,34 @@
+name: Feature request
+description: Propose a RepoRacer improvement.
+title: "feat: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What user problem would this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Describe the change and any alternatives considered.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - CLI UX
+        - Git mining
+        - Agent adapters
+        - Scoring
+        - Reports
+        - Security
+        - Documentation
+        - CI/release
+    validations:
+      required: true

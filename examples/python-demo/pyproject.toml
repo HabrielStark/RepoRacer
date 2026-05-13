@@ -1,0 +1,7 @@
+[project]
+name = "reporacer-python-demo"
+version = "1.0.0"
+requires-python = ">=3.11"
+
+[tool.reporacer]
+test-command = "python -B -m unittest discover -s tests"

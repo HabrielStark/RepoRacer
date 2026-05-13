@@ -1,0 +1,16 @@
+node_modules/
+.reporacer/
+.reporacer-demo-site/
+artifacts/
+coverage/
+dist/
+docs/.vitepress/dist/
+docs/api/
+examples/buggy-todo-app/generated/
+examples/**/__pycache__/
+examples/**/*.pyc
+examples/rust-demo/target/
+*.tgz
+reporacer_full_technical_spec.md
+.git/
+.gitignore

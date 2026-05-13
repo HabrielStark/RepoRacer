@@ -1,0 +1,48 @@
+name: Bug report
+description: Report a reproducible RepoRacer bug.
+title: "bug: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      description: Include commands, config, and the smallest repository shape that reproduces the issue.
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include OS, Node version, package manager, RepoRacer version, Git version, and agent command.
+      value: |
+        - OS:
+        - Node:
+        - Package manager:
+        - RepoRacer:
+        - Git:
+        - Agent:
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Paste redacted logs or attach the generated report after reviewing it for private code.

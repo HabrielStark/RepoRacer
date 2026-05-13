@@ -1,0 +1,11 @@
+* @HabrielStark
+
+/.github/ @HabrielStark
+/src/ @HabrielStark
+/tests/ @HabrielStark
+/scripts/ @HabrielStark
+/docs/ @HabrielStark
+/examples/ @HabrielStark
+/Dockerfile @HabrielStark
+/package.json @HabrielStark
+/pnpm-lock.yaml @HabrielStark

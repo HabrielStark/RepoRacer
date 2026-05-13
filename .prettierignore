@@ -1,0 +1,15 @@
+dist/
+node_modules/
+coverage/
+.reporacer/
+.reporacer-demo-site/
+docs/.vitepress/dist/
+docs/api/
+*.tgz
+reporacer_full_technical_spec.md
+examples/buggy-todo-app/generated/
+examples/rust-demo/target/
+examples/**/__pycache__/
+examples/**/*.pyc
+pnpm-lock.yaml
+THIRD_PARTY_NOTICES.md

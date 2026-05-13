@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "testCommand": "pnpm test",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "maxTasks": 5,
+  "timeoutMinutesPerAgent": 12,
+  "parallelAgents": 2,
+  "parallelTasks": 1,
+  "baselineCheck": true,
+  "evaluationMode": "working-tree",
+  "keepWorktrees": false,
+  "commitSelection": {
+    "lookback": 100,
+    "minChangedFiles": 1,
+    "maxChangedFiles": 8,
+    "maxChangedLines": 500,
+    "excludeMergeCommits": true,
+    "excludePatterns": [
+      "package-lock.json",
+      "pnpm-lock.yaml",
+      "yarn.lock",
+      "dist/**",
+      "build/**",
+      "coverage/**",
+      "*.png",
+      "*.jpg",
+      "*.jpeg",
+      "*.gif",
+      "*.mp4",
+      "*.zip"
+    ],
+    "preferMessages": ["fix", "bug", "handle", "prevent", "support", "add test", "refactor"]
+  },
+  "hiddenTests": {
+    "enabled": false,
+    "includePatterns": [
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      "**/*.test.js",
+      "**/*.spec.js",
+      "tests/**",
+      "test/**",
+      "**/*_test.py"
+    ]
+  },
+  "sandbox": {
+    "mode": "none",
+    "dockerImage": "node:20-bookworm",
+    "network": "default",
+    "cpus": 2,
+    "memory": "4g"
+  },
+  "agents": [
+    { "name": "fake-success", "enabled": true },
+    { "name": "fake-noop", "enabled": true },
+    { "name": "fake-timeout", "enabled": false },
+    {
+      "name": "codex",
+      "command": "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check - < {{promptFile}}",
+      "enabled": false
+    },
+    { "name": "claude", "command": "claude -p < {{promptFile}}", "enabled": false },
+    { "name": "gemini", "command": "gemini --approval-mode auto_edit < {{promptFile}}", "enabled": false },
+    { "name": "aider", "command": "aider --message-file {{promptFile}}", "enabled": false },
+    {
+      "name": "opencode",
+      "command": "opencode run --file {{promptFile}} \"Follow the attached RepoRacer task prompt exactly.\"",
+      "enabled": false
+    },
+    {
+      "name": "custom",
+      "command": "my-agent --prompt-file {{promptFile}} --task {{taskId}}",
+      "enabled": false
+    }
+  ],
+  "riskRules": {
+    "failOnTestDeletion": true,
+    "failOnTestWeakening": true,
+    "failOnCiWeakening": true,
+    "failOnEnvFileChanges": true,
+    "warnOnLargeDiff": true,
+    "maxDiffLines": 800
+  },
+  "report": {
+    "openAfterRun": false,
+    "includeLogs": true,
+    "includePatchPreview": true,
+    "audience": "private",
+    "redactReport": true,
+    "maxLogPreviewChars": 20000,
+    "maxPatchPreviewChars": 12000
+  },
+  "ci": {
+    "generateGitHubAction": true,
+    "defaultAgents": ["fake-success", "fake-noop"],
+    "defaultTasks": 5
+  },
+  "share": {
+    "generateMarkdown": true,
+    "generateBadge": true,
+    "publicReportDefaults": true
+  }
+}

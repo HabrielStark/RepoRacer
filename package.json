@@ -1,0 +1,139 @@
+{
+  "name": "reporacer",
+  "version": "1.0.0",
+  "description": "Benchmark AI coding agents on your own repository using real tasks mined from git history.",
+  "type": "module",
+  "bin": {
+    "reporacer": "./dist/cli.js"
+  },
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "SECURITY.md",
+    "RUNBOOK.md",
+    "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    "DCO.md",
+    "GOVERNANCE.md",
+    "AUTHORS.md",
+    "MAINTAINERS.md",
+    "TRADEMARKS.md",
+    "THIRD_PARTY_NOTICES.md",
+    "CHANGELOG.md",
+    ".env.example",
+    "assets",
+    "examples/config.json",
+    "examples/buggy-todo-app/README.md",
+    "examples/buggy-todo-app/scripts",
+    "examples/nextjs-demo/README.md",
+    "examples/nextjs-demo/package.json",
+    "examples/nextjs-demo/app",
+    "examples/nextjs-demo/test",
+    "examples/python-demo/README.md",
+    "examples/python-demo/pyproject.toml",
+    "examples/python-demo/src/reporacer_demo.py",
+    "examples/python-demo/tests/test_reporacer_demo.py",
+    "examples/rust-demo/README.md",
+    "examples/rust-demo/Cargo.toml",
+    "examples/rust-demo/Cargo.lock",
+    "examples/rust-demo/src",
+    "scripts",
+    "docs/*.md",
+    "docs/.vitepress/config.mts",
+    "docs/public"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "test": "vitest run --coverage=false",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "docs:api": "typedoc --plugin typedoc-plugin-markdown --out docs/api src/index.ts",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "pnpm docs:api && vitepress build docs && node scripts/fix-vitepress-api-index.js",
+    "demo:build": "pnpm build && pnpm docs:build && node scripts/build-demo-site.js",
+    "demo:check": "node scripts/check-static-links.js .reporacer-demo-site",
+    "agents:verify": "node scripts/verify-agent-presets.js",
+    "agents:verify:strict": "node scripts/verify-agent-presets.js --strict",
+    "docker:sandbox:smoke": "node scripts/smoke-docker-sandbox.js",
+    "sbom": "node scripts/generate-sbom.js",
+    "notices": "node scripts/generate-third-party-notices.js",
+    "release:audit": "node scripts/release-audit.js",
+    "commitlint": "commitlint --edit",
+    "prepare": "node scripts/prepare.js",
+    "prepack": "pnpm build"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "coding-agent",
+    "benchmark",
+    "git",
+    "swe-bench",
+    "codex",
+    "claude",
+    "gemini"
+  ],
+  "author": "HabrielStark and RepoRacer contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HabrielStark/RepoRacer.git"
+  },
+  "homepage": "https://github.com/HabrielStark/RepoRacer#readme",
+  "bugs": {
+    "url": "https://github.com/HabrielStark/RepoRacer/issues"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/HabrielStark"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "pnpm@10.18.3",
+  "pnpm": {
+    "overrides": {
+      "esbuild": "0.25.12",
+      "vite": "6.4.2"
+    }
+  },
+  "dependencies": {
+    "chalk": "5.6.2",
+    "commander": "14.0.3",
+    "execa": "9.6.1",
+    "open": "11.0.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "21.0.0",
+    "@commitlint/config-conventional": "21.0.0",
+    "@eslint/js": "10.0.1",
+    "@types/node": "25.6.2",
+    "@vitest/coverage-v8": "4.1.6",
+    "eslint": "10.3.0",
+    "husky": "9.1.7",
+    "prettier": "3.8.3",
+    "tsx": "4.21.0",
+    "typedoc": "0.28.19",
+    "typedoc-plugin-markdown": "4.11.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.59.3",
+    "vitepress": "1.6.4",
+    "vitest": "4.1.6"
+  }
+}

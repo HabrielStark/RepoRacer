@@ -1,0 +1,91 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish, without the leading v"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+  packages: write
+
+jobs:
+  publish:
+    name: Publish npm package
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate third-party notices
+        run: pnpm notices
+
+      - name: Generate SBOM
+        run: pnpm sbom
+
+      - name: Verify
+        run: |
+          pnpm lint
+          pnpm format:check
+          pnpm check
+          pnpm test:coverage
+          pnpm demo:build
+          pnpm demo:check
+          pnpm docker:sandbox:smoke
+          pnpm agents:verify
+          pnpm release:audit
+
+      - name: Check release ref matches package version
+        env:
+          REQUESTED_VERSION: ${{ github.event.inputs.version || '' }}
+        run: node scripts/check-release-version.js
+
+      - name: Pack
+        run: npm pack --json
+
+      - name: Build Docker image
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          IMAGE="ghcr.io/${GITHUB_REPOSITORY,,}"
+          docker build -t "$IMAGE:$VERSION" -t "$IMAGE:latest" .
+
+      - name: Publish with provenance
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish Docker image to GHCR
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          IMAGE="ghcr.io/${GITHUB_REPOSITORY,,}"
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker push "$IMAGE:$VERSION"
+          docker push "$IMAGE:latest"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
+        with:
+          files: |
+            reporacer-*.tgz
+            artifacts/reporacer.cdx.json
+          generate_release_notes: true

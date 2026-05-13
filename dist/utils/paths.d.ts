@@ -1,0 +1,10 @@
+export declare const REPORACER_DIR = ".reporacer";
+export declare function toPosixPath(value: string): string;
+export declare function repoRacerDir(repoRoot: string): string;
+export declare function repoRacerPath(repoRoot: string, ...parts: string[]): string;
+export declare function currentPath(repoRoot: string, ...parts: string[]): string;
+export declare function runPath(repoRoot: string, runId: string, ...parts: string[]): string;
+export declare function isInside(parent: string, child: string): boolean;
+export declare function assertInside(parent: string, child: string): void;
+export declare function gitRelativePath(repoRoot: string, absolutePath: string): string;
+export declare function matchesAnyPattern(filePath: string, patterns: string[]): boolean;

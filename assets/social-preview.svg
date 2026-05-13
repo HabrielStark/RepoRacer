@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="RepoRacer social preview">
+  <rect width="1280" height="640" fill="#0b1020"/>
+  <rect x="80" y="80" width="1120" height="480" rx="36" fill="#111a2e" stroke="#26395f"/>
+  <text x="140" y="210" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="82" font-weight="700">RepoRacer</text>
+  <text x="144" y="292" fill="#8bd3ff" font-family="Inter,Segoe UI,sans-serif" font-size="38">Your git history is the benchmark.</text>
+  <text x="146" y="380" fill="#d7e6ff" font-family="Consolas,Menlo,monospace" font-size="30">reporacer run --agents codex,claude --tasks 5</text>
+  <g transform="translate(970 160) scale(2.4)">
+    <rect width="96" height="96" rx="20" fill="#0b1020" stroke="#40e0a0"/>
+    <path d="M20 64h56" stroke="#8bd3ff" stroke-width="6" stroke-linecap="round"/>
+    <path d="M23 50h36c9 0 14-5 14-14 0-8-6-14-15-14H23v42" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M48 50l24 24" stroke="#40e0a0" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="73" cy="73" r="6" fill="#40e0a0"/>
+  </g>
+</svg>

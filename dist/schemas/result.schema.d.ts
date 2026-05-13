@@ -1,0 +1,182 @@
+import { z } from "zod";
+export declare const runStatusSchema: z.ZodEnum<{
+    completed: "completed";
+    agent_failed: "agent_failed";
+    test_failed: "test_failed";
+    timed_out: "timed_out";
+    no_changes: "no_changes";
+    risk_blocked: "risk_blocked";
+    internal_error: "internal_error";
+}>;
+export declare const riskFlagSchema: z.ZodObject<{
+    level: z.ZodEnum<{
+        medium: "medium";
+        low: "low";
+        high: "high";
+        critical: "critical";
+    }>;
+    code: z.ZodString;
+    message: z.ZodString;
+    file: z.ZodOptional<z.ZodString>;
+}, z.core.$strip>;
+export declare const scoreBreakdownSchema: z.ZodObject<{
+    final: z.ZodNumber;
+    tests: z.ZodNumber;
+    hiddenTests: z.ZodNumber;
+    patchSimilarity: z.ZodNumber;
+    changedFilesOverlap: z.ZodNumber;
+    diffSize: z.ZodNumber;
+    minimality: z.ZodNumber;
+    speed: z.ZodNumber;
+    riskPenalty: z.ZodNumber;
+    solved: z.ZodBoolean;
+}, z.core.$strip>;
+export declare const nameStatusSchema: z.ZodObject<{
+    status: z.ZodString;
+    path: z.ZodString;
+}, z.core.$strip>;
+export declare const commandRunResultSchema: z.ZodObject<{
+    command: z.ZodString;
+    cwd: z.ZodString;
+    exitCode: z.ZodNullable<z.ZodNumber>;
+    stdout: z.ZodString;
+    stderr: z.ZodString;
+    output: z.ZodString;
+    durationMs: z.ZodNumber;
+    timedOut: z.ZodBoolean;
+    failedToStart: z.ZodBoolean;
+}, z.core.$strip>;
+export declare const testRunResultSchema: z.ZodObject<{
+    skipped: z.ZodBoolean;
+    command: z.ZodNullable<z.ZodString>;
+    passed: z.ZodBoolean;
+    exitCode: z.ZodNullable<z.ZodNumber>;
+    durationMs: z.ZodNumber;
+    output: z.ZodString;
+    phase: z.ZodEnum<{
+        baseline: "baseline";
+        agent: "agent";
+        hidden: "hidden";
+    }>;
+}, z.core.$strip>;
+export declare const diffSummarySchema: z.ZodObject<{
+    changedFiles: z.ZodArray<z.ZodString>;
+    nameStatuses: z.ZodArray<z.ZodObject<{
+        status: z.ZodString;
+        path: z.ZodString;
+    }, z.core.$strip>>;
+    insertions: z.ZodNumber;
+    deletions: z.ZodNumber;
+    changedLines: z.ZodNumber;
+    patchPath: z.ZodString;
+    patchPreview: z.ZodString;
+}, z.core.$strip>;
+export declare const repoRacerResultSchema: z.ZodObject<{
+    id: z.ZodString;
+    taskId: z.ZodString;
+    agentName: z.ZodString;
+    status: z.ZodEnum<{
+        completed: "completed";
+        agent_failed: "agent_failed";
+        test_failed: "test_failed";
+        timed_out: "timed_out";
+        no_changes: "no_changes";
+        risk_blocked: "risk_blocked";
+        internal_error: "internal_error";
+    }>;
+    startedAt: z.ZodString;
+    finishedAt: z.ZodString;
+    durationMs: z.ZodNumber;
+    worktreePath: z.ZodString;
+    promptPath: z.ZodString;
+    logPath: z.ZodString;
+    command: z.ZodString;
+    agentExitCode: z.ZodNullable<z.ZodNumber>;
+    agentError: z.ZodNullable<z.ZodString>;
+    install: z.ZodNullable<z.ZodObject<{
+        command: z.ZodString;
+        cwd: z.ZodString;
+        exitCode: z.ZodNullable<z.ZodNumber>;
+        stdout: z.ZodString;
+        stderr: z.ZodString;
+        output: z.ZodString;
+        durationMs: z.ZodNumber;
+        timedOut: z.ZodBoolean;
+        failedToStart: z.ZodBoolean;
+    }, z.core.$strip>>;
+    baseline: z.ZodNullable<z.ZodObject<{
+        skipped: z.ZodBoolean;
+        command: z.ZodNullable<z.ZodString>;
+        passed: z.ZodBoolean;
+        exitCode: z.ZodNullable<z.ZodNumber>;
+        durationMs: z.ZodNumber;
+        output: z.ZodString;
+        phase: z.ZodEnum<{
+            baseline: "baseline";
+            agent: "agent";
+            hidden: "hidden";
+        }>;
+    }, z.core.$strip>>;
+    tests: z.ZodObject<{
+        skipped: z.ZodBoolean;
+        command: z.ZodNullable<z.ZodString>;
+        passed: z.ZodBoolean;
+        exitCode: z.ZodNullable<z.ZodNumber>;
+        durationMs: z.ZodNumber;
+        output: z.ZodString;
+        phase: z.ZodEnum<{
+            baseline: "baseline";
+            agent: "agent";
+            hidden: "hidden";
+        }>;
+    }, z.core.$strip>;
+    hiddenTests: z.ZodNullable<z.ZodObject<{
+        skipped: z.ZodBoolean;
+        command: z.ZodNullable<z.ZodString>;
+        passed: z.ZodBoolean;
+        exitCode: z.ZodNullable<z.ZodNumber>;
+        durationMs: z.ZodNumber;
+        output: z.ZodString;
+        phase: z.ZodEnum<{
+            baseline: "baseline";
+            agent: "agent";
+            hidden: "hidden";
+        }>;
+    }, z.core.$strip>>;
+    diff: z.ZodObject<{
+        changedFiles: z.ZodArray<z.ZodString>;
+        nameStatuses: z.ZodArray<z.ZodObject<{
+            status: z.ZodString;
+            path: z.ZodString;
+        }, z.core.$strip>>;
+        insertions: z.ZodNumber;
+        deletions: z.ZodNumber;
+        changedLines: z.ZodNumber;
+        patchPath: z.ZodString;
+        patchPreview: z.ZodString;
+    }, z.core.$strip>;
+    risks: z.ZodArray<z.ZodObject<{
+        level: z.ZodEnum<{
+            medium: "medium";
+            low: "low";
+            high: "high";
+            critical: "critical";
+        }>;
+        code: z.ZodString;
+        message: z.ZodString;
+        file: z.ZodOptional<z.ZodString>;
+    }, z.core.$strip>>;
+    scores: z.ZodObject<{
+        final: z.ZodNumber;
+        tests: z.ZodNumber;
+        hiddenTests: z.ZodNumber;
+        patchSimilarity: z.ZodNumber;
+        changedFilesOverlap: z.ZodNumber;
+        diffSize: z.ZodNumber;
+        minimality: z.ZodNumber;
+        speed: z.ZodNumber;
+        riskPenalty: z.ZodNumber;
+        solved: z.ZodBoolean;
+    }, z.core.$strip>;
+    hiddenTestPatchApplied: z.ZodBoolean;
+}, z.core.$strip>;
