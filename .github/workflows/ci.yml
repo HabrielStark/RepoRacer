@@ -47,7 +47,7 @@ jobs:
         run: pnpm test:coverage
 
       - name: Upload coverage
-        uses: codecov/codecov-action@75cd11691c0faa626561e295848008c8a7dddffe
+        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2
         if: matrix.os == 'ubuntu-latest' && matrix.node == 24
         with:
           files: coverage/lcov.info
