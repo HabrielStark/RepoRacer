@@ -77,30 +77,46 @@ function checkGitHubPages() {
     return;
   }
 
-  const token = process.env.GITHUB_TOKEN;
-  if (token === undefined || token.trim().length === 0) {
-    fail("GitHub Pages status unknown: set GITHUB_TOKEN with access to the repository");
+  const publicResult = queryGitHubPages(null);
+  if (publicResult.status === 0) {
+    pass(`GitHub Pages enabled: ${firstLine(publicResult.output)}`);
+    return;
+  }
+  if (/^404\b/.test(firstLine(publicResult.output))) {
+    fail("GitHub Pages is not enabled or not publicly visible for this repository");
     return;
   }
 
-  const result = run("node", [
+  const token = process.env.GITHUB_TOKEN;
+  if (token === undefined || token.trim().length === 0) {
+    fail(`GitHub Pages status unknown: ${firstLine(publicResult.output)}; set GITHUB_TOKEN with repository access`);
+    return;
+  }
+
+  const tokenResult = queryGitHubPages(token);
+
+  if (tokenResult.status === 0) {
+    pass(`GitHub Pages enabled: ${firstLine(tokenResult.output)}`);
+  } else {
+    fail(`GitHub Pages not enabled or not visible: ${firstLine(tokenResult.output)}`);
+  }
+}
+
+function queryGitHubPages(token) {
+  return run("node", [
     "-e",
     [
       "const [repo, token] = process.argv.slice(1);",
-      "const res = await fetch(`https://api.github.com/repos/${repo}/pages`, { headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json', 'User-Agent': 'reporacer-release-readiness' } });",
+      "const headers = { Accept: 'application/vnd.github+json', 'User-Agent': 'reporacer-release-readiness' };",
+      "if (token) headers.Authorization = `Bearer ${token}`;",
+      "const res = await fetch(`https://api.github.com/repos/${repo}/pages`, { headers });",
       "if (!res.ok) { console.error(`${res.status} ${res.statusText}`); process.exit(1); }",
       "const body = await res.json();",
       "console.log(`${body.status || 'configured'} ${body.html_url || ''}`.trim());"
     ].join(" "),
     repo,
-    token
+    token ?? ""
   ]);
-
-  if (result.status === 0) {
-    pass(`GitHub Pages enabled: ${firstLine(result.output)}`);
-  } else {
-    fail(`GitHub Pages not enabled or not visible: ${firstLine(result.output)}`);
-  }
 }
 
 function checkReleaseTag() {
