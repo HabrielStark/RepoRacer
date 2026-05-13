@@ -42,13 +42,39 @@ function run(binary, args) {
   const commandArgs = process.platform === "win32" ? ["/d", "/c", [binary, ...args].join(" ")] : args;
   const result = spawnSync(command, commandArgs, {
     encoding: "utf8",
-    timeout: 15_000
+    timeout: 15_000,
+    env: processEnvWithUserBinPaths()
   });
   return {
     status: result.status,
     error: result.error?.message ?? null,
     output: `${result.stdout ?? ""}${result.stderr ?? ""}`.trim()
   };
+}
+
+function processEnvWithUserBinPaths() {
+  const env = { ...process.env };
+  const pathKey = Object.keys(env).find((key) => key.toLowerCase() === "path") ?? "PATH";
+  const extraPaths = userBinPaths().filter((entry) => entry.length > 0);
+  if (extraPaths.length > 0) {
+    env[pathKey] = [env[pathKey], ...extraPaths].filter(Boolean).join(process.platform === "win32" ? ";" : ":");
+  }
+  return env;
+}
+
+function userBinPaths() {
+  if (process.platform !== "win32") {
+    return [];
+  }
+  const paths = [];
+  const userScripts = spawnSync("python", ["-c", "import sysconfig; print(sysconfig.get_path('scripts', 'nt_user'))"], {
+    encoding: "utf8",
+    timeout: 5_000
+  });
+  if (userScripts.status === 0) {
+    paths.push(userScripts.stdout.trim());
+  }
+  return paths;
 }
 
 let failed = false;
