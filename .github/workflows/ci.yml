@@ -77,12 +77,17 @@ jobs:
       - name: Package smoke
         run: npm pack --json --dry-run --ignore-scripts
 
-      - name: Docker image smoke
+      - name: Docker build smoke
         if: matrix.os == 'ubuntu-latest' && matrix.node == 24
-        run: |
-          docker build -t reporacer:ci .
-          docker run --rm reporacer:ci --version
-          pnpm docker:sandbox:smoke
+        run: docker build -t reporacer:ci .
+
+      - name: Docker CLI image smoke
+        if: matrix.os == 'ubuntu-latest' && matrix.node == 24
+        run: docker run --rm reporacer:ci --version
+
+      - name: Docker sandbox command smoke
+        if: matrix.os == 'ubuntu-latest' && matrix.node == 24
+        run: pnpm docker:sandbox:smoke
 
   examples:
     name: Example projects
