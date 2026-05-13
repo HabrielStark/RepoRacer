@@ -4,7 +4,7 @@
   "description": "Benchmark AI coding agents on your own repository using real tasks mined from git history.",
   "type": "module",
   "bin": {
-    "reporacer": "./dist/cli.js"
+    "reporacer": "dist/cli.js"
   },
   "types": "./dist/index.d.ts",
   "exports": {

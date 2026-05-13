@@ -202,6 +202,12 @@ if (packageJson.publishConfig?.access === "public") {
   fail("package publishConfig.access must be public");
 }
 
+if (packageJson.bin?.reporacer === "dist/cli.js") {
+  pass("package bin uses npm-valid CLI path");
+} else {
+  fail("package bin.reporacer must be dist/cli.js without a leading ./");
+}
+
 for (const field of externalReleaseFields) {
   if (packageJson[field] === undefined) {
     warn(`package ${field} is unset until the public GitHub/npm owner is known`);
