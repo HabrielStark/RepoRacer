@@ -38,6 +38,7 @@ const requiredFiles = [
   "scripts/check-release-version.js",
   "scripts/check-static-links.js",
   "scripts/smoke-docker-sandbox.js",
+  "scripts/smoke-packed-cli.js",
   "scripts/generate-third-party-notices.js"
 ];
 const requiredPackedFiles = [
@@ -55,6 +56,7 @@ const requiredPackedFiles = [
   "scripts/generate-sbom.js",
   "scripts/check-static-links.js",
   "scripts/smoke-docker-sandbox.js",
+  "scripts/smoke-packed-cli.js",
   "scripts/generate-third-party-notices.js",
   "assets/logo.svg",
   "assets/social-preview.svg",
@@ -105,12 +107,14 @@ const requiredTextChecks = [
     "npm pack --json --dry-run --ignore-scripts",
     "CI audits npm package contents without lifecycle side effects"
   ],
+  [".github/workflows/ci.yml", "pnpm package:smoke", "CI installs and runs the packed npm CLI"],
   [".github/workflows/ci.yml", "docker run --rm reporacer:ci --version", "CI smokes Docker CLI image"],
   [".github/workflows/ci.yml", "pnpm docker:sandbox:smoke", "CI smokes Docker sandbox command execution"],
   [".github/workflows/ci.yml", "pnpm agents:verify", "CI smokes official agent preset availability"],
   [".github/workflows/ci.yml", "node ../../../dist/cli.js run", "CI exercises flagship demo through dist CLI"],
   [".github/workflows/ci.yml", "python -B -m unittest", "CI runs Python demo without bytecode cache output"],
   [".github/workflows/release.yml", "pnpm agents:verify", "Release workflow smokes official agent presets"],
+  [".github/workflows/release.yml", "pnpm package:smoke", "Release workflow installs and runs the packed npm CLI"],
   ["Dockerfile", "node:24-bookworm-slim@sha256:", "Dockerfile pins Node base image by digest"],
   ["Dockerfile", "USER node", "Dockerfile runs as non-root node user"],
   [".gitignore", "reporacer_full_technical_spec.md", "Git ignores local technical spec prompt"],

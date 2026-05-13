@@ -77,6 +77,9 @@ jobs:
       - name: Package smoke
         run: npm pack --json --dry-run --ignore-scripts
 
+      - name: Packed CLI smoke
+        run: pnpm package:smoke
+
       - name: Docker build smoke
         if: matrix.os == 'ubuntu-latest' && matrix.node == 24
         run: docker build -t reporacer:ci .

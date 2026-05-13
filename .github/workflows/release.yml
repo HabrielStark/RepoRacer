@@ -60,6 +60,7 @@ jobs:
           pnpm test:coverage
           pnpm demo:build
           pnpm demo:check
+          pnpm package:smoke
           pnpm docker:sandbox:smoke
           pnpm agents:verify
           pnpm release:audit
