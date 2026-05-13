@@ -80,12 +80,7 @@ const ignoredWorkspaceDirs = new Set([".git", "node_modules", "dist", "coverage"
 const externalReleaseFields = ["repository", "homepage", "bugs", "funding"];
 const requiredTextChecks = [
   [".github/workflows/pages.yml", "pnpm demo:build", "Pages workflow builds docs and demo site together"],
-  [".github/workflows/pages.yml", "Check Pages availability", "Pages workflow preflights repository Pages setup"],
-  [
-    ".github/workflows/pages.yml",
-    "if: steps.pages.outputs.enabled == 'true'",
-    "Pages workflow skips deploy when Pages is not enabled"
-  ],
+  [".github/workflows/pages.yml", "actions/deploy-pages", "Pages workflow deploys through GitHub Actions"],
   [".github/workflows/release.yml", "pnpm release:audit", "Release workflow runs release audit"],
   [
     ".github/workflows/release.yml",
