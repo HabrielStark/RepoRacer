@@ -29,7 +29,7 @@ RepoRacer follows SemVer after `1.0.0`.
 
 ## Required Repository Settings
 
-- GitHub Pages must be enabled for the repository and configured to use GitHub Actions as the source. Until that owner-level setting is enabled, the Pages workflow builds and uploads the artifact, preflights the Pages API, and skips only the deployment step.
+- GitHub Pages must be enabled for the repository and configured to use GitHub Actions as the source.
 
 ## Owner Finalization
 
@@ -40,7 +40,7 @@ These steps require owner-controlled credentials and cannot be completed by a cl
 3. Run the release workflow for `1.0.0`, or push an immutable `v1.0.0` tag after the secret is configured.
 4. Confirm `npm view reporacer version` returns `1.0.0`.
 5. Confirm `https://habrielstark.github.io/RepoRacer/` serves the demo site.
-6. Run `pnpm release:external-audit` on a machine with npm auth and all five provider CLIs installed. If the public GitHub Pages API cannot determine status, set `GITHUB_TOKEN` with repository access for the audit run.
+6. Run `pnpm release:external-audit` on a machine with npm auth and all five provider CLIs installed.
 
 ## External Release Audit
 

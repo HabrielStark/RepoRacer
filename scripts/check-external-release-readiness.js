@@ -83,7 +83,12 @@ function checkGitHubPages() {
     return;
   }
   if (/^404\b/.test(firstLine(publicResult.output))) {
-    fail("GitHub Pages is not enabled or not publicly visible for this repository");
+    const siteResult = queryGitHubPagesSite();
+    if (siteResult.status === 0) {
+      pass(`GitHub Pages site is live: ${firstLine(siteResult.output)}`);
+      return;
+    }
+    fail(`GitHub Pages is not serving the expected site: ${firstLine(siteResult.output)}`);
     return;
   }
 
@@ -116,6 +121,22 @@ function queryGitHubPages(token) {
     ].join(" "),
     repo,
     token ?? ""
+  ]);
+}
+
+function queryGitHubPagesSite() {
+  const [owner, name] = repo.split("/");
+  return run("node", [
+    "-e",
+    [
+      "const [owner, name] = process.argv.slice(1);",
+      "const url = `https://${owner.toLowerCase()}.github.io/${name}/`;",
+      "const res = await fetch(url, { method: 'HEAD', redirect: 'follow' });",
+      "if (!res.ok) { console.error(`${res.status} ${res.statusText}`); process.exit(1); }",
+      "console.log(url);"
+    ].join(" "),
+    owner,
+    name
   ]);
 }
 
