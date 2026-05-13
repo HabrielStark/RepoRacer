@@ -4,6 +4,7 @@ import path from "node:path";
 import { RepoRacerError } from "../utils/errors.js";
 import { matchesAnyPattern, toPosixPath } from "../utils/paths.js";
 import { redactSecrets } from "./process-safe.js";
+const worktreeOperationQueues = new Map();
 export async function runGit(args, cwd) {
     const result = await execa("git", args, {
         cwd,
@@ -200,25 +201,27 @@ export async function listUntrackedFiles(worktreePath) {
         .map(toPosixPath);
 }
 export async function createGitWorktree(repoRoot, worktreePath, commitSha) {
-    await runGit(["worktree", "add", "--detach", worktreePath, commitSha], repoRoot);
+    await serializeWorktreeOperation(repoRoot, () => runGit(["worktree", "add", "--detach", worktreePath, commitSha], repoRoot));
 }
 export async function removeGitWorktree(repoRoot, worktreePath) {
-    const result = await execa("git", ["worktree", "remove", "--force", worktreePath], {
-        cwd: repoRoot,
-        env: cleanGitEnvironment(),
-        extendEnv: false,
-        reject: false,
-        windowsHide: true
-    });
-    if (result.exitCode !== 0) {
-        await execa("git", ["worktree", "prune"], {
+    await serializeWorktreeOperation(repoRoot, async () => {
+        const result = await execa("git", ["worktree", "remove", "--force", worktreePath], {
             cwd: repoRoot,
             env: cleanGitEnvironment(),
             extendEnv: false,
             reject: false,
             windowsHide: true
         });
-    }
+        if (result.exitCode !== 0) {
+            await execa("git", ["worktree", "prune"], {
+                cwd: repoRoot,
+                env: cleanGitEnvironment(),
+                extendEnv: false,
+                reject: false,
+                windowsHide: true
+            });
+        }
+    });
 }
 export async function buildCommitCandidate(repoRoot, header, excludePatterns, preferMessages) {
     const parentSha = header.parentShas[0];
@@ -317,6 +320,19 @@ function findGitAttributeFiles(repoRoot) {
             }
         }
     }
+}
+function serializeWorktreeOperation(repoRoot, operation) {
+    const key = path.resolve(repoRoot);
+    const previous = worktreeOperationQueues.get(key) ?? Promise.resolve();
+    const run = previous.catch(() => undefined).then(operation);
+    const queued = run.then(() => undefined, () => undefined);
+    const cleanup = queued.finally(() => {
+        if (worktreeOperationQueues.get(key) === cleanup) {
+            worktreeOperationQueues.delete(key);
+        }
+    });
+    worktreeOperationQueues.set(key, cleanup);
+    return run;
 }
 function cleanGitEnvironment() {
     return Object.fromEntries(Object.entries(process.env).filter(([key]) => key !== "GIT_CONFIG_PARAMETERS" && !key.startsWith("GIT_")));

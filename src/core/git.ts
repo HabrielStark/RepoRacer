@@ -6,6 +6,8 @@ import { RepoRacerError } from "../utils/errors.js";
 import { matchesAnyPattern, toPosixPath } from "../utils/paths.js";
 import { redactSecrets } from "./process-safe.js";
 
+const worktreeOperationQueues = new Map<string, Promise<void>>();
+
 export interface GitCommitHeader {
   sha: string;
   parentShas: string[];
@@ -255,26 +257,30 @@ export async function listUntrackedFiles(worktreePath: string): Promise<string[]
 }
 
 export async function createGitWorktree(repoRoot: string, worktreePath: string, commitSha: string): Promise<void> {
-  await runGit(["worktree", "add", "--detach", worktreePath, commitSha], repoRoot);
+  await serializeWorktreeOperation(repoRoot, () =>
+    runGit(["worktree", "add", "--detach", worktreePath, commitSha], repoRoot)
+  );
 }
 
 export async function removeGitWorktree(repoRoot: string, worktreePath: string): Promise<void> {
-  const result = await execa("git", ["worktree", "remove", "--force", worktreePath], {
-    cwd: repoRoot,
-    env: cleanGitEnvironment(),
-    extendEnv: false,
-    reject: false,
-    windowsHide: true
-  });
-  if (result.exitCode !== 0) {
-    await execa("git", ["worktree", "prune"], {
+  await serializeWorktreeOperation(repoRoot, async () => {
+    const result = await execa("git", ["worktree", "remove", "--force", worktreePath], {
       cwd: repoRoot,
       env: cleanGitEnvironment(),
       extendEnv: false,
       reject: false,
       windowsHide: true
     });
-  }
+    if (result.exitCode !== 0) {
+      await execa("git", ["worktree", "prune"], {
+        cwd: repoRoot,
+        env: cleanGitEnvironment(),
+        extendEnv: false,
+        reject: false,
+        windowsHide: true
+      });
+    }
+  });
 }
 
 export async function buildCommitCandidate(
@@ -389,6 +395,23 @@ function findGitAttributeFiles(repoRoot: string): string[] {
       }
     }
   }
+}
+
+function serializeWorktreeOperation<T>(repoRoot: string, operation: () => Promise<T>): Promise<T> {
+  const key = path.resolve(repoRoot);
+  const previous = worktreeOperationQueues.get(key) ?? Promise.resolve();
+  const run = previous.catch(() => undefined).then(operation);
+  const queued = run.then(
+    () => undefined,
+    () => undefined
+  );
+  const cleanup = queued.finally(() => {
+    if (worktreeOperationQueues.get(key) === cleanup) {
+      worktreeOperationQueues.delete(key);
+    }
+  });
+  worktreeOperationQueues.set(key, cleanup);
+  return run;
 }
 
 function cleanGitEnvironment(): NodeJS.ProcessEnv {

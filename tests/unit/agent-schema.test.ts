@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { resolveAgents } from "../../src/agents/types.js";
+import { renderAgentCommand } from "../../src/agents/custom.js";
+import { isBuiltInAgent, isPresetAgent, resolveAgents } from "../../src/agents/types.js";
 import { buildJudgePrompt } from "../../src/prompts/judge-prompt.js";
 import { repoRacerResultSchema } from "../../src/schemas/result.schema.js";
 import { repoRacerSummarySchema } from "../../src/schemas/report.schema.js";
@@ -80,6 +81,41 @@ const task: RepoRacerTask = {
 };
 
 describe("agent presets and runtime schemas", () => {
+  it("classifies built-in, preset, configured, and missing agents", () => {
+    expect(isBuiltInAgent("fake-success")).toBe(true);
+    expect(isBuiltInAgent("codex")).toBe(false);
+    expect(isPresetAgent("codex")).toBe(true);
+    expect(isPresetAgent("local-agent")).toBe(false);
+
+    const agents = resolveAgents(
+      [
+        { name: "fake-success", enabled: true, timeoutMinutes: 3 },
+        { name: "local-agent", command: "node local.js {{promptFile}}", enabled: true }
+      ],
+      ["fake-success", "local-agent", "unknown-agent"]
+    );
+
+    expect(agents).toMatchObject([
+      { name: "fake-success", source: "config", builtIn: "fake-success", timeoutMinutes: 3 },
+      { name: "local-agent", source: "config", command: "node local.js {{promptFile}}" },
+      { name: "unknown-agent", source: "missing", command: null }
+    ]);
+  });
+
+  it("renders custom agent command variables through shell-safe templating", () => {
+    const rendered = renderAgentCommand("agent --task {{taskId}} --prompt {{promptFile}} --unknown {{missing}}", {
+      promptFile: "C:/repo path/task.md",
+      taskId: "task-001",
+      agentName: "local",
+      worktreePath: "C:/repo path/worktree",
+      testCommand: "npm test"
+    });
+
+    expect(rendered).toContain("task-001");
+    expect(rendered).toContain("C:/repo path/task.md");
+    expect(rendered).toContain("{{missing}}");
+  });
+
   it("resolves real agent presets even when they are not in config", () => {
     const agents = resolveAgents([], ["codex", "claude", "gemini", "aider", "opencode"]);
 

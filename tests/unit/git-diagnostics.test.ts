@@ -4,11 +4,24 @@ import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
+  applyPatch,
   buildCommitCandidate,
+  collectWorktreeDiff,
+  createGitWorktree,
+  dirtyEntries,
+  ensureCleanWorkingTree,
+  getCommitPatch,
+  getDiffStats,
+  getHeadSha,
+  getPatchBetweenRefs,
+  getRepoName,
+  getRepoRoot,
   gitLfsDiagnostics,
+  isGitRepo,
   isShallowRepository,
   listConfiguredSubmodules,
-  listRecentCommitHeaders
+  listRecentCommitHeaders,
+  removeGitWorktree
 } from "../../src/core/git.js";
 
 describe("git repository diagnostics", () => {
@@ -97,6 +110,85 @@ describe("git repository diagnostics", () => {
       restoreEnv("GIT_WORK_TREE", previousGitWorkTree);
       restoreEnv("GIT_INDEX_FILE", previousGitIndex);
     }
+  });
+
+  it("serializes concurrent worktree add and remove operations for one repository", async () => {
+    const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), "reporacer-worktree-queue-"));
+    await git(repoRoot, ["init"]);
+    await git(repoRoot, ["config", "user.email", "test@example.com"]);
+    await git(repoRoot, ["config", "user.name", "RepoRacer Test"]);
+    await fs.writeFile(path.join(repoRoot, "README.md"), "worktree queue\n", "utf8");
+    await git(repoRoot, ["add", "."]);
+    await git(repoRoot, ["commit", "-m", "chore: worktree queue fixture"]);
+    const head = (await git(repoRoot, ["rev-parse", "HEAD"])).trim();
+
+    const worktrees = await Promise.all(
+      ["one", "two", "three"].map(async (name) => {
+        const worktreePath = path.join(repoRoot, ".reporacer", "worktrees", name);
+        await createGitWorktree(repoRoot, worktreePath, head);
+        return worktreePath;
+      })
+    );
+
+    await Promise.all(worktrees.map((worktreePath) => fs.access(path.join(worktreePath, "README.md"))));
+
+    await Promise.all(worktrees.map((worktreePath) => removeGitWorktree(repoRoot, worktreePath)));
+    await expect(Promise.all(worktrees.map((worktreePath) => fs.access(worktreePath)))).rejects.toThrow();
+  });
+
+  it("reports roots, names, diffs, patches, and dirty paths through the public git helpers", async () => {
+    const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), "reporacer-git-helpers-"));
+    await git(repoRoot, ["init"]);
+    await git(repoRoot, ["config", "user.email", "test@example.com"]);
+    await git(repoRoot, ["config", "user.name", "RepoRacer Test"]);
+    await fs.mkdir(path.join(repoRoot, "src"), { recursive: true });
+    await fs.writeFile(path.join(repoRoot, "src", "app.txt"), "before\n", "utf8");
+    await git(repoRoot, ["add", "."]);
+    await git(repoRoot, ["commit", "-m", "chore: base helper fixture"]);
+    const base = (await git(repoRoot, ["rev-parse", "HEAD"])).trim();
+
+    await fs.writeFile(path.join(repoRoot, "src", "app.txt"), "after\n", "utf8");
+    await git(repoRoot, ["add", "."]);
+    await git(repoRoot, ["commit", "-m", "fix: update helper fixture"]);
+    const head = await getHeadSha(repoRoot);
+
+    const subdir = path.join(repoRoot, "src");
+    await expect(isGitRepo(repoRoot)).resolves.toBe(true);
+    expect(await fs.realpath(await getRepoRoot(subdir))).toBe(await fs.realpath(repoRoot));
+    await expect(getRepoName(repoRoot)).resolves.toBe(path.basename(repoRoot));
+    await git(repoRoot, ["remote", "add", "origin", "https://github.com/example/reporacer-demo.git"]);
+    await expect(getRepoName(repoRoot)).resolves.toBe("reporacer-demo");
+
+    await expect(getDiffStats(repoRoot, base, head)).resolves.toMatchObject({
+      changedFiles: ["src/app.txt"],
+      insertions: 1,
+      deletions: 1
+    });
+    await expect(getCommitPatch(repoRoot, head)).resolves.toContain("+after");
+    const patch = await getPatchBetweenRefs(repoRoot, base, head, ["src/app.txt"]);
+    expect(patch).toContain("-before");
+    expect(patch).toContain("+after");
+
+    const worktreePath = path.join(repoRoot, ".reporacer", "apply-target");
+    const patchPath = path.join(repoRoot, ".reporacer", "patch.diff");
+    await fs.mkdir(path.dirname(patchPath), { recursive: true });
+    await fs.writeFile(patchPath, patch, "utf8");
+    await createGitWorktree(repoRoot, worktreePath, base);
+    await applyPatch(worktreePath, patchPath);
+    const appliedText = await fs.readFile(path.join(worktreePath, "src", "app.txt"), "utf8");
+    expect(appliedText.replace(/\r\n/g, "\n")).toBe("after\n");
+    await removeGitWorktree(repoRoot, worktreePath);
+
+    await fs.writeFile(path.join(repoRoot, "dirty.txt"), "dirty\n", "utf8");
+    await fs.mkdir(path.join(repoRoot, ".reporacer", "ignored"), { recursive: true });
+    await fs.writeFile(path.join(repoRoot, ".reporacer", "ignored", "ignored.txt"), "ignored\n", "utf8");
+    await expect(dirtyEntries(repoRoot)).resolves.toEqual(["dirty.txt"]);
+    await expect(ensureCleanWorkingTree(repoRoot, false)).rejects.toThrow(/Dirty paths: dirty\.txt/);
+    await expect(ensureCleanWorkingTree(repoRoot, true)).resolves.toBeUndefined();
+
+    const diff = await collectWorktreeDiff(repoRoot);
+    expect(diff.stats.changedFiles).toContain("dirty.txt");
+    expect(diff.patch).toContain("+dirty");
   });
 });
 
