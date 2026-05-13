@@ -25,3 +25,7 @@ RepoRacer follows SemVer after `1.0.0`.
 ## Required Secrets
 
 - `NPM_TOKEN`: npm automation token with publish access for the package.
+
+## Required Repository Settings
+
+- GitHub Pages must be enabled for the repository and configured to use GitHub Actions as the source. Without that owner-level setting, the Pages workflow still builds and uploads the artifact, but GitHub rejects deployment creation with a 404.
