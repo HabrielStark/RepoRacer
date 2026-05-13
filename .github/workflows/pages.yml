@@ -44,6 +44,40 @@ jobs:
         with:
           path: .reporacer-demo-site
 
+      - name: Check Pages availability
+        id: pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { appendFileSync } from "node:fs";
+          import process from "node:process";
+
+          const response = await fetch(`https://api.github.com/repos/${process.env.REPOSITORY}/pages`, {
+            headers: {
+              Accept: "application/vnd.github+json",
+              Authorization: `Bearer ${process.env.GH_TOKEN}`,
+              "User-Agent": "reporacer-pages-preflight"
+            }
+          });
+
+          const enabled = response.ok;
+          appendFileSync(process.env.GITHUB_OUTPUT, `enabled=${enabled}\n`);
+
+          if (!enabled && response.status !== 404) {
+            const body = await response.text();
+            console.error(`GitHub Pages preflight failed: ${response.status} ${response.statusText}`);
+            console.error(body);
+            process.exit(1);
+          }
+
+          if (!enabled) {
+            console.log("GitHub Pages is not enabled for this repository yet; deploy step will be skipped.");
+          }
+          NODE
+
       - name: Deploy Pages
+        if: steps.pages.outputs.enabled == 'true'
         id: deployment
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128

@@ -29,7 +29,7 @@ RepoRacer follows SemVer after `1.0.0`.
 
 ## Required Repository Settings
 
-- GitHub Pages must be enabled for the repository and configured to use GitHub Actions as the source. Without that owner-level setting, the Pages workflow still builds and uploads the artifact, but GitHub rejects deployment creation with a 404.
+- GitHub Pages must be enabled for the repository and configured to use GitHub Actions as the source. Until that owner-level setting is enabled, the Pages workflow builds and uploads the artifact, preflights the Pages API, and skips only the deployment step.
 
 ## External Release Audit
 
