@@ -46,6 +46,7 @@
     "examples/rust-demo/Cargo.lock",
     "examples/rust-demo/src",
     "scripts/build-demo-site.js",
+    "scripts/check-external-release-readiness.js",
     "scripts/check-release-version.js",
     "scripts/check-static-links.js",
     "scripts/fix-vitepress-api-index.js",
@@ -77,6 +78,7 @@
     "sbom": "node scripts/generate-sbom.js",
     "notices": "node scripts/generate-third-party-notices.js",
     "release:audit": "node scripts/release-audit.js",
+    "release:external-audit": "node scripts/check-external-release-readiness.js",
     "commitlint": "commitlint --edit",
     "prepare": "node scripts/prepare.js",
     "prepack": "pnpm build"

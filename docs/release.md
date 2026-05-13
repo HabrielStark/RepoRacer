@@ -9,10 +9,11 @@ RepoRacer follows SemVer after `1.0.0`.
 2. Run `pnpm sbom` and inspect `artifacts/reporacer.cdx.json`.
 3. Run `pnpm notices` and inspect `THIRD_PARTY_NOTICES.md`.
 4. Run `pnpm release:audit` and require a clean pass.
-5. Confirm `npm pack --json --dry-run --ignore-scripts` contains only intended files.
-6. Update `CHANGELOG.md`.
-7. Tag `vX.Y.Z`, or run the manual release workflow with `version` set to exactly `X.Y.Z`.
-8. Let `.github/workflows/release.yml` publish with npm provenance, push the GHCR Docker image, attach the npm tarball, and attach the CycloneDX SBOM.
+5. Run `pnpm release:external-audit` on the owner release machine after npm auth, Pages, and official provider CLIs are configured.
+6. Confirm `npm pack --json --dry-run --ignore-scripts` contains only intended files.
+7. Update `CHANGELOG.md`.
+8. Tag `vX.Y.Z`, or run the manual release workflow with `version` set to exactly `X.Y.Z`.
+9. Let `.github/workflows/release.yml` publish with npm provenance, push the GHCR Docker image, attach the npm tarball, and attach the CycloneDX SBOM.
 
 `npm sbom` is not used in this pnpm project because npm's SBOM command validates the pnpm virtual store as if it were an npm install tree and reports false missing/invalid dependency errors. `pnpm sbom` uses `pnpm licenses list --json` and writes a CycloneDX 1.5 document without adding a third-party SBOM generator dependency.
 
@@ -29,3 +30,7 @@ RepoRacer follows SemVer after `1.0.0`.
 ## Required Repository Settings
 
 - GitHub Pages must be enabled for the repository and configured to use GitHub Actions as the source. Without that owner-level setting, the Pages workflow still builds and uploads the artifact, but GitHub rejects deployment creation with a 404.
+
+## External Release Audit
+
+`pnpm release:external-audit` intentionally fails until all owner-controlled release surfaces are real: npm authentication, the published npm version, GitHub Pages availability, remote tag alignment, and strict provider CLI installation.

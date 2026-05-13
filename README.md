@@ -328,10 +328,13 @@ pnpm audit --audit-level moderate
 pnpm sbom
 pnpm notices
 pnpm release:audit
+pnpm release:external-audit
 npm pack --json --dry-run --ignore-scripts
 ```
 
 Coverage thresholds are enforced in CI: 78% statements, 56% branches, 59% functions, and 85% lines. Raise them only after adding tests that keep the threshold green on Windows, macOS, and Linux.
+
+`pnpm release:external-audit` checks the owner-controlled public-release surfaces that local CI cannot complete by itself: npm authentication, the published npm version, GitHub Pages status, remote tag alignment, and strict Codex/Claude/Gemini/Aider/OpenCode CLI availability. It is expected to fail on machines without the owner npm/GitHub credentials or without every provider CLI installed.
 
 ## Dependency Pin Summary
 
