@@ -6,9 +6,10 @@
 pnpm install
 pnpm check
 pnpm test
+pnpm test:coverage
 pnpm build
-pnpm audit --audit-level high
-npm pack --dry-run
+pnpm release:audit
+npm pack --json --dry-run --ignore-scripts
 ```
 
 ## Manual Fixture Test
@@ -101,3 +102,5 @@ If no tasks are found, increase `commitSelection.lookback`, raise `maxChangedFil
 If an agent command is missing, RepoRacer records that agent as failed and continues other selected agents.
 
 If `reporacer ci` or `reporacer share` says generation is disabled, check `ci.generateGitHubAction` and `share.*` in `.reporacer/config.json`.
+
+If `pnpm release:external-audit` fails on npm authentication or GitHub Pages status, finish the owner release setup first: configure `NPM_TOKEN`, publish the package through the release workflow, and enable Pages with GitHub Actions as the source.
