@@ -4,7 +4,7 @@ Which AI coding agent is best for your codebase?
 
 RepoRacer turns your own Git history into a private benchmark for Codex, Claude, Gemini, Aider, OpenCode, and any command-line coding agent.
 
-![RepoRacer terminal demo](assets/terminal-demo.svg)
+![RepoRacer agent benchmark race visualization](assets/reporacer-hero.png)
 
 ```bash
 npx reporacer init
@@ -15,6 +15,14 @@ npx reporacer open
 ```
 
 Your git history is the benchmark.
+
+## Visual Overview
+
+![RepoRacer architecture pipeline visualization](assets/architecture-pipeline.png)
+
+RepoRacer turns commits into benchmark lanes: mined tasks, isolated worktrees, agent commands, tests, risk scanning, score composition, and a static report you can inspect or publish.
+
+![RepoRacer terminal demo](assets/terminal-demo.svg)
 
 ## What It Does
 

@@ -2,6 +2,8 @@
 
 RepoRacer ships one benchmark-style fixture and three small language smoke projects.
 
+![RepoRacer benchmark race visualization](../assets/reporacer-hero.png)
+
 ## Buggy Todo App
 
 Generate a disposable git repository with an initial commit plus ten fix commits:

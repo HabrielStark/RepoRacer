@@ -1,16 +1,8 @@
 # Architecture
 
-```mermaid
-flowchart LR
-  A["Git history"] --> B["Task miner"]
-  B --> C["Parent worktree"]
-  C --> D["Agent runner"]
-  D --> E["Diff analyzer"]
-  E --> F["Risk scanner"]
-  F --> G["Test runner"]
-  G --> H["Scorer"]
-  H --> I["Summary + report"]
-```
+<img src="/architecture-pipeline.png" alt="RepoRacer architecture pipeline visualization" style="width:100%;border-radius:14px;border:1px solid rgba(125, 211, 252, 0.25);box-shadow:0 18px 54px rgba(2, 6, 23, 0.22);" />
+
+The benchmark pipeline is intentionally linear: Git history becomes tasks, tasks become isolated worktrees, agents produce patches, tests and risk checks validate them, and the scorer turns the evidence into a static report.
 
 ## Modules
 

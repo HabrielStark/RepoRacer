@@ -4,6 +4,20 @@ export default defineConfig({
   title: "RepoRacer",
   description: "Benchmark AI coding agents on your own repository using real tasks mined from git history.",
   cleanUrls: true,
+  head: [
+    ["meta", { property: "og:type", content: "website" }],
+    ["meta", { property: "og:title", content: "RepoRacer" }],
+    [
+      "meta",
+      {
+        property: "og:description",
+        content: "Benchmark AI coding agents on real tasks mined from your own Git history."
+      }
+    ],
+    ["meta", { property: "og:image", content: "https://habrielstark.github.io/RepoRacer/social-preview.png" }],
+    ["meta", { name: "twitter:card", content: "summary_large_image" }],
+    ["meta", { name: "twitter:image", content: "https://habrielstark.github.io/RepoRacer/social-preview.png" }]
+  ],
   themeConfig: {
     logo: "/logo.svg",
     nav: [

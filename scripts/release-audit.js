@@ -39,7 +39,10 @@ const requiredFiles = [
   "scripts/check-static-links.js",
   "scripts/smoke-docker-sandbox.js",
   "scripts/smoke-packed-cli.js",
-  "scripts/generate-third-party-notices.js"
+  "scripts/generate-third-party-notices.js",
+  "assets/reporacer-hero.png",
+  "assets/architecture-pipeline.png",
+  "assets/social-preview.png"
 ];
 const requiredPackedFiles = [
   "dist/cli.js",
@@ -59,7 +62,13 @@ const requiredPackedFiles = [
   "scripts/smoke-packed-cli.js",
   "scripts/generate-third-party-notices.js",
   "assets/logo.svg",
+  "assets/reporacer-hero.png",
+  "assets/architecture-pipeline.png",
+  "assets/social-preview.png",
   "assets/social-preview.svg",
+  "docs/public/reporacer-hero.png",
+  "docs/public/architecture-pipeline.png",
+  "docs/public/social-preview.png",
   "examples/buggy-todo-app/scripts/create-history.cjs",
   "docs/index.md",
   "docs/.vitepress/config.mts"
