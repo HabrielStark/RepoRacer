@@ -280,6 +280,7 @@ describe("RepoRacer integration flow", () => {
       agents: ["custom", "test-mutator"],
       maxTasks: 1,
       evaluationMode: "hidden-target-tests",
+      parallelAgents: 1,
       baselineCheck: true
     });
 
