@@ -54,6 +54,33 @@ describe("docker sandbox command execution", () => {
     await expect(fs.access(path.join(repoRoot, ".reporacer"))).rejects.toThrow();
   });
 
+  it("rejects docker command scripts through .reporacer symlink or junction escapes", async () => {
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "reporacer-docker-junction-"));
+    const repoRoot = path.join(tempDir, "repo");
+    const outside = path.join(tempDir, "outside");
+    tempDirs.push(tempDir);
+    await fs.mkdir(repoRoot);
+    await fs.mkdir(outside);
+    await fs.symlink(outside, path.join(repoRoot, ".reporacer"), process.platform === "win32" ? "junction" : "dir");
+
+    await expect(
+      runCommand("echo should-not-run", {
+        cwd: repoRoot,
+        sandbox: {
+          mode: "docker",
+          dockerImage: "node:24-bookworm-slim",
+          network: "none",
+          cpus: 1,
+          memory: "256m"
+        },
+        timeoutMs: 10_000
+      })
+    ).rejects.toThrow(/symlink or junction/);
+
+    expect(execaCommand).not.toHaveBeenCalled();
+    await expect(fs.readdir(outside)).resolves.toEqual([]);
+  });
+
   it("normalizes failed process starts and redacts captured secret output", async () => {
     const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), "reporacer-process-failure-"));
     tempDirs.push(repoRoot);

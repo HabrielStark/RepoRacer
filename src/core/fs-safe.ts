@@ -42,6 +42,26 @@ export async function removeGeneratedPath(repoRoot: string, targetPath: string):
   await fs.rm(targetPath, { recursive: true, force: true, maxRetries: 3 });
 }
 
+export async function removeEmptyGeneratedParents(repoRoot: string, startPath: string): Promise<void> {
+  const base = repoRacerDir(repoRoot);
+  let current = path.resolve(startPath);
+  const resolvedBase = path.resolve(base);
+  assertInside(resolvedBase, current);
+
+  for (;;) {
+    await assertNoGeneratedPathEscape(base, current);
+    try {
+      await fs.rmdir(current);
+    } catch {
+      return;
+    }
+    if (samePath(resolvedBase, current)) {
+      return;
+    }
+    current = path.dirname(current);
+  }
+}
+
 export async function readTextIfExists(filePath: string): Promise<string | null> {
   if (!(await pathExists(filePath))) {
     return null;
@@ -73,4 +93,8 @@ async function assertNotLink(filePath: string): Promise<void> {
   if (stat.isSymbolicLink()) {
     throw new Error(`Refusing to access generated path through symlink or junction: ${filePath}`);
   }
+}
+
+function samePath(left: string, right: string): boolean {
+  return path.relative(left, right) === "";
 }
