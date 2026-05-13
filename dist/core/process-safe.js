@@ -1,8 +1,8 @@
 import { execaCommand } from "execa";
 import { randomUUID } from "node:crypto";
-import { promises as fs } from "node:fs";
 import path from "node:path";
 import { nowIso } from "../utils/time.js";
+import { removeEmptyGeneratedParents, removeGeneratedPath, writeGeneratedFile } from "./fs-safe.js";
 const MAX_BUFFER = 50 * 1024 * 1024;
 export async function runCommand(command, options) {
     const started = Date.now();
@@ -63,8 +63,8 @@ export async function runCommand(command, options) {
     }
     finally {
         if (dockerScript !== null) {
-            await fs.rm(dockerScript.hostPath, { force: true });
-            await removeEmptyParents(dockerScript.hostPath, options.cwd);
+            await removeGeneratedPath(options.cwd, dockerScript.hostPath);
+            await removeEmptyGeneratedParents(options.cwd, dockerScript.hostDir);
         }
     }
 }
@@ -110,29 +110,16 @@ export function buildDockerCommand(command, cwd, sandbox) {
         .join(" ");
 }
 async function writeDockerCommandScript(cwd, command) {
-    const relativeDir = path.join(".reporacer", "tmp", "docker-commands");
+    const relativeDir = path.join(".reporacer", "tmp", "docker-commands", `${process.pid}-${Date.now()}-${randomUUID()}`);
     const hostDir = path.join(cwd, relativeDir);
-    await fs.mkdir(hostDir, { recursive: true });
-    const fileName = `${process.pid}-${Date.now()}-${randomUUID()}.sh`;
+    const fileName = "command.sh";
     const hostPath = path.join(hostDir, fileName);
-    await fs.writeFile(hostPath, `#!/bin/sh\n${command}\n`, "utf8");
+    await writeGeneratedFile(cwd, hostPath, `#!/bin/sh\n${command}\n`);
     return {
         containerRelativePath: path.join(relativeDir, fileName).replace(/\\/g, "/"),
+        hostDir,
         hostPath
     };
-}
-async function removeEmptyParents(filePath, stopAt) {
-    let current = path.dirname(filePath);
-    const boundary = path.resolve(stopAt);
-    while (path.resolve(current).startsWith(boundary) && path.resolve(current) !== boundary) {
-        try {
-            await fs.rmdir(current);
-        }
-        catch {
-            return;
-        }
-        current = path.dirname(current);
-    }
 }
 export function redactSecrets(input) {
     if (input.length === 0) {

@@ -38,6 +38,25 @@ export async function removeGeneratedPath(repoRoot, targetPath) {
     }
     await fs.rm(targetPath, { recursive: true, force: true, maxRetries: 3 });
 }
+export async function removeEmptyGeneratedParents(repoRoot, startPath) {
+    const base = repoRacerDir(repoRoot);
+    let current = path.resolve(startPath);
+    const resolvedBase = path.resolve(base);
+    assertInside(resolvedBase, current);
+    for (;;) {
+        await assertNoGeneratedPathEscape(base, current);
+        try {
+            await fs.rmdir(current);
+        }
+        catch {
+            return;
+        }
+        if (samePath(resolvedBase, current)) {
+            return;
+        }
+        current = path.dirname(current);
+    }
+}
 export async function readTextIfExists(filePath) {
     if (!(await pathExists(filePath))) {
         return null;
@@ -65,5 +84,8 @@ async function assertNotLink(filePath) {
     if (stat.isSymbolicLink()) {
         throw new Error(`Refusing to access generated path through symlink or junction: ${filePath}`);
     }
+}
+function samePath(left, right) {
+    return path.relative(left, right) === "";
 }
 //# sourceMappingURL=fs-safe.js.map
