@@ -390,4 +390,33 @@ describe("security helpers", () => {
       /Invalid report output/
     );
   });
+
+  it("rejects generated writes through .reporacer symlink or junction escapes", async () => {
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "reporacer-junction-"));
+    const repoRoot = path.join(tempDir, "repo");
+    const outside = path.join(tempDir, "outside");
+    await fs.mkdir(repoRoot);
+    await fs.mkdir(outside);
+    await fs.symlink(outside, path.join(repoRoot, ".reporacer"), process.platform === "win32" ? "junction" : "dir");
+
+    const summary: RepoRacerSummary = {
+      version: 1,
+      repo: { name: "repo", root: repoRoot, head: "abc" },
+      run: {
+        id: "run-1",
+        startedAt: "now",
+        finishedAt: "later",
+        tasks: 0,
+        agents: [],
+        evaluationMode: "working-tree",
+        baselineCheck: false
+      },
+      winner: null,
+      leaderboard: [],
+      results: []
+    };
+
+    await expect(generateReport(repoRoot, "run-1", summary)).rejects.toThrow(/symlink or junction/);
+    await expect(fs.access(path.join(outside, "report.html"))).rejects.toThrow();
+  });
 });

@@ -16,12 +16,18 @@ export async function ensureDir(dirPath) {
 export async function writeGeneratedFile(repoRoot, targetPath, content) {
     const base = repoRacerDir(repoRoot);
     assertInside(base, targetPath);
+    await assertNoGeneratedPathEscape(base, path.dirname(targetPath));
     await ensureDir(path.dirname(targetPath));
+    await assertNoGeneratedPathEscape(base, path.dirname(targetPath));
+    if (await pathExists(targetPath)) {
+        await assertNotLink(targetPath);
+    }
     await fs.writeFile(targetPath, content, "utf8");
 }
 export async function removeGeneratedPath(repoRoot, targetPath) {
     const base = repoRacerDir(repoRoot);
     assertInside(base, targetPath);
+    await assertNoGeneratedPathEscape(base, path.dirname(targetPath));
     if (!(await pathExists(targetPath))) {
         return;
     }
@@ -37,5 +43,27 @@ export async function readTextIfExists(filePath) {
         return null;
     }
     return fs.readFile(filePath, "utf8");
+}
+async function assertNoGeneratedPathEscape(base, targetParent) {
+    const resolvedBase = path.resolve(base);
+    const resolvedParent = path.resolve(targetParent);
+    assertInside(resolvedBase, resolvedParent);
+    if (await pathExists(resolvedBase)) {
+        await assertNotLink(resolvedBase);
+    }
+    let current = resolvedBase;
+    const relativeParts = path.relative(resolvedBase, resolvedParent).split(path.sep).filter(Boolean);
+    for (const part of relativeParts) {
+        current = path.join(current, part);
+        if (await pathExists(current)) {
+            await assertNotLink(current);
+        }
+    }
+}
+async function assertNotLink(filePath) {
+    const stat = await fs.lstat(filePath);
+    if (stat.isSymbolicLink()) {
+        throw new Error(`Refusing to access generated path through symlink or junction: ${filePath}`);
+    }
 }
 //# sourceMappingURL=fs-safe.js.map
