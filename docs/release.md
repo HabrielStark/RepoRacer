@@ -25,7 +25,7 @@ RepoRacer follows SemVer after `1.0.0`.
 
 ## Required Secrets
 
-- `NPM_TOKEN`, `NODE_AUTH_TOKEN`, or `REPORACER`: npm automation token with publish access for the package. `NPM_TOKEN` is the conventional name; `REPORACER` is accepted for the current repository setup.
+- `NPM_TOKEN`, `NODE_AUTH_TOKEN`, or `REPORACER`: npm automation or granular access token with publish access for the package. `NPM_TOKEN` is the conventional name; `REPORACER` is accepted for the current repository setup. A GitHub token will not work here.
 
 ## Required Repository Settings
 
@@ -35,7 +35,7 @@ RepoRacer follows SemVer after `1.0.0`.
 
 These steps require owner-controlled credentials and cannot be completed by a clean repository patch:
 
-1. Create an npm automation token for the package owner account and save it as the repository secret `NPM_TOKEN`, `NODE_AUTH_TOKEN`, or `REPORACER`.
+1. Create an npm automation or granular access token for the package owner account and save it as the repository secret `NPM_TOKEN`, `NODE_AUTH_TOKEN`, or `REPORACER`.
 2. Enable GitHub Pages in repository settings with source set to GitHub Actions.
 3. Run the release workflow for `1.0.0`, or push an immutable `v1.0.0` tag after the secret is configured.
 4. Confirm `npm view reporacer version` returns `1.0.0`.

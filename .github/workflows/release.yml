@@ -39,6 +39,11 @@ jobs:
             echo "::error title=npm token missing::Configure an npm automation token as the repository secret NPM_TOKEN, NODE_AUTH_TOKEN, or REPORACER before running the release workflow."
             exit 1
           fi
+          if ! npm whoami --registry https://registry.npmjs.org > /tmp/reporacer-npm-user.txt; then
+            echo "::error title=npm token invalid::The configured npm token was found but npm rejected it. Use an npm automation or granular access token with publish access to reporacer."
+            exit 1
+          fi
+          echo "npm token authenticated as $(cat /tmp/reporacer-npm-user.txt)"
 
       - name: Enable Corepack
         run: corepack enable
