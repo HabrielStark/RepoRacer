@@ -1,20 +1,36 @@
 # RepoRacer
 
+[![npm](https://img.shields.io/npm/v/reporacer?color=43e2a7&label=npm)](https://www.npmjs.com/package/reporacer)
+[![CI](https://github.com/HabrielStark/RepoRacer/actions/workflows/ci.yml/badge.svg)](https://github.com/HabrielStark/RepoRacer/actions/workflows/ci.yml)
+[![Release](https://github.com/HabrielStark/RepoRacer/actions/workflows/release.yml/badge.svg)](https://github.com/HabrielStark/RepoRacer/actions/workflows/release.yml)
+[![Docs](https://img.shields.io/badge/docs-live-5ce1ff)](https://habrielstark.github.io/RepoRacer/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-f46f9a)](LICENSE)
+
 Which AI coding agent is best for your codebase?
 
 RepoRacer turns your own Git history into a private benchmark for Codex, Claude, Gemini, Aider, OpenCode, and any command-line coding agent.
 
 ![RepoRacer agent benchmark race visualization](assets/reporacer-hero.png)
 
+## Install
+
 ```bash
-npx reporacer init
-npx reporacer doctor
-npx reporacer tasks --tasks 5
-npx reporacer run --agents fake-success,fake-noop --tasks 2
-npx reporacer open
+npx --yes reporacer@1.0.0 init
+npx --yes reporacer@1.0.0 doctor
+npx --yes reporacer@1.0.0 tasks --tasks 5
+npx --yes reporacer@1.0.0 run --agents fake-success,fake-noop --tasks 2
+npx --yes reporacer@1.0.0 open
 ```
 
 Your git history is the benchmark.
+
+## Built For Agent CLIs
+
+RepoRacer is not a synthetic prompt leaderboard. It benchmarks agent CLIs against the repository they are supposed to change: real commits, real worktrees, real tests, hidden target-test mode, risk scanning, static reports, and public-safe sharing.
+
+- **Codex / Claude Code / Gemini CLI / Aider / OpenCode** presets are available out of the box.
+- **Custom agents** work through any command that can edit files in the current working directory.
+- **Fake agents** are included so you can prove the benchmark plumbing before running paid or networked tools.
 
 ## Visual Overview
 

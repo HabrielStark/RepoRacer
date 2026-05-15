@@ -1,14 +1,51 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="RepoRacer social preview">
-  <rect width="1280" height="640" fill="#0b1020"/>
-  <rect x="80" y="80" width="1120" height="480" rx="36" fill="#111a2e" stroke="#26395f"/>
-  <text x="140" y="210" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="82" font-weight="700">RepoRacer</text>
-  <text x="144" y="292" fill="#8bd3ff" font-family="Inter,Segoe UI,sans-serif" font-size="38">Your git history is the benchmark.</text>
-  <text x="146" y="380" fill="#d7e6ff" font-family="Consolas,Menlo,monospace" font-size="30">reporacer run --agents codex,claude --tasks 5</text>
-  <g transform="translate(970 160) scale(2.4)">
-    <rect width="96" height="96" rx="20" fill="#0b1020" stroke="#40e0a0"/>
-    <path d="M20 64h56" stroke="#8bd3ff" stroke-width="6" stroke-linecap="round"/>
-    <path d="M23 50h36c9 0 14-5 14-14 0-8-6-14-15-14H23v42" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M48 50l24 24" stroke="#40e0a0" stroke-width="7" stroke-linecap="round"/>
-    <circle cx="73" cy="73" r="6" fill="#40e0a0"/>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#080c18" />
+      <stop offset="1" stop-color="#111628" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000" flood-opacity=".45" />
+    </filter>
+  </defs>
+  <rect width="1280" height="640" fill="url(#bg)" />
+  <g opacity=".75">
+    <path d="M835 278 1250 88" stroke="#509cff" stroke-width="18" />
+    <path d="M835 370 1250 180" stroke="#5ce1ff" stroke-width="18" />
+    <path d="M835 462 1250 272" stroke="#43e2a7" stroke-width="18" />
+    <path d="M835 554 1250 364" stroke="#f46f9a" stroke-width="18" />
+    <path d="M835 646 1250 456" stroke="#b486ff" stroke-width="18" />
+  </g>
+  <rect x="64" y="64" width="1152" height="512" rx="38" fill="#0b111d" stroke="#455880" stroke-width="2" filter="url(#shadow)" />
+  <g transform="translate(112 112)">
+    <rect width="94" height="94" rx="19" fill="#080d1a" stroke="#43e2a7" stroke-width="3" />
+    <path d="M17 63h60" stroke="#5ce1ff" stroke-width="6" stroke-linecap="round" />
+    <path d="M24 69V26h34c9 0 16 6 16 14s-7 15-16 15H24" fill="none" stroke="#f4f8ff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M48 50 74 78" stroke="#43e2a7" stroke-width="7" stroke-linecap="round" />
+    <circle cx="76" cy="76" r="6" fill="#43e2a7" />
+  </g>
+  <text x="224" y="160" fill="#f4f8ff" font-family="Segoe UI, Inter, sans-serif" font-size="32" font-weight="700">RepoRacer</text>
+  <text x="226" y="178" fill="#96a3b8" font-family="Cascadia Code, Consolas, monospace" font-size="12">code-agent benchmark</text>
+  <text x="112" y="358" fill="#f4f8ff" font-family="Segoe UI, Inter, sans-serif" font-size="62" font-weight="700">Benchmark code agents</text>
+  <text x="116" y="421" fill="#5ce1ff" font-family="Segoe UI, Inter, sans-serif" font-size="54" font-weight="700">on your real repo</text>
+  <rect x="112" y="430" width="648" height="62" rx="18" fill="#060a14" stroke="#4a5f82" stroke-width="2" />
+  <text x="142" y="469" fill="#43e2a7" font-family="Cascadia Code, Consolas, monospace" font-size="28" font-weight="700">npx reporacer@1.0.0 run</text>
+  <text x="116" y="558" fill="#c9d7eb" font-family="Segoe UI, Inter, sans-serif" font-size="23">real tasks / isolated worktrees / hidden tests / risk scoring / static reports</text>
+  <g font-family="Cascadia Code, Consolas, monospace" font-size="24" font-weight="700" fill="#f4f8ff">
+    <rect x="820" y="132" width="300" height="42" rx="16" fill="#0c1220" stroke="#509cff" stroke-width="2" />
+    <circle cx="842" cy="153" r="7" fill="#509cff" />
+    <text x="856" y="163">Codex</text>
+    <rect x="820" y="208" width="300" height="42" rx="16" fill="#0c1220" stroke="#f08164" stroke-width="2" />
+    <circle cx="842" cy="229" r="7" fill="#f08164" />
+    <text x="856" y="239">Claude Code</text>
+    <rect x="820" y="284" width="300" height="42" rx="16" fill="#0c1220" stroke="#b486ff" stroke-width="2" />
+    <circle cx="842" cy="305" r="7" fill="#b486ff" />
+    <text x="856" y="315">Gemini CLI</text>
+    <rect x="820" y="360" width="300" height="42" rx="16" fill="#0c1220" stroke="#43e2a7" stroke-width="2" />
+    <circle cx="842" cy="381" r="7" fill="#43e2a7" />
+    <text x="856" y="391">Aider</text>
+    <rect x="820" y="436" width="300" height="42" rx="16" fill="#0c1220" stroke="#f46f9a" stroke-width="2" />
+    <circle cx="842" cy="457" r="7" fill="#f46f9a" />
+    <text x="856" y="467">OpenCode</text>
   </g>
 </svg>
