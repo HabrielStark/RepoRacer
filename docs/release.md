@@ -25,7 +25,7 @@ RepoRacer follows SemVer after `1.0.0`.
 
 ## Required Secrets
 
-- `NPM_TOKEN`: npm automation token with publish access for the package.
+- `NPM_TOKEN`, `NODE_AUTH_TOKEN`, or `REPORACER`: npm automation token with publish access for the package. `NPM_TOKEN` is the conventional name; `REPORACER` is accepted for the current repository setup.
 
 ## Required Repository Settings
 
@@ -35,7 +35,7 @@ RepoRacer follows SemVer after `1.0.0`.
 
 These steps require owner-controlled credentials and cannot be completed by a clean repository patch:
 
-1. Create an npm automation token for the package owner account and save it as the repository secret `NPM_TOKEN`.
+1. Create an npm automation token for the package owner account and save it as the repository secret `NPM_TOKEN`, `NODE_AUTH_TOKEN`, or `REPORACER`.
 2. Enable GitHub Pages in repository settings with source set to GitHub Actions.
 3. Run the release workflow for `1.0.0`, or push an immutable `v1.0.0` tag after the secret is configured.
 4. Confirm `npm view reporacer version` returns `1.0.0`.
@@ -44,4 +44,4 @@ These steps require owner-controlled credentials and cannot be completed by a cl
 
 ## External Release Audit
 
-`pnpm release:external-audit` intentionally fails until all owner-controlled release surfaces are real: npm authentication, the published npm version, GitHub Pages availability, remote tag alignment, and strict provider CLI installation.
+`pnpm release:external-audit` intentionally fails until all owner-controlled release surfaces are real: npm authentication through `NPM_TOKEN`, `NODE_AUTH_TOKEN`, `REPORACER`, or a local npm login, the published npm version, GitHub Pages availability, remote tag alignment, and strict provider CLI installation.

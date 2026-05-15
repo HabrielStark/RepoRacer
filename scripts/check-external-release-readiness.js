@@ -29,9 +29,9 @@ function checkNpmIdentity() {
     return;
   }
 
-  const token = process.env.NPM_TOKEN ?? process.env.NODE_AUTH_TOKEN;
+  const token = process.env.NPM_TOKEN ?? process.env.NODE_AUTH_TOKEN ?? process.env.REPORACER;
   if (token === undefined || token.trim().length === 0) {
-    fail("npm authentication missing: run npm adduser locally or set NPM_TOKEN/NODE_AUTH_TOKEN");
+    fail("npm authentication missing: run npm adduser locally or set NPM_TOKEN/NODE_AUTH_TOKEN/REPORACER");
     return;
   }
 
