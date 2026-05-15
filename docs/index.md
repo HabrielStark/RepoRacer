@@ -27,6 +27,8 @@ features:
 
 ## Watch It Run
 
+This is an end-to-end recording of RepoRacer on a real tiny Node.js `tiny-shop` repository: install with `npx`, preflight with `doctor`, mine three historical bug-fix tasks, run hidden target tests, and open the generated public report.
+
 <video controls muted playsinline poster="https://habrielstark.github.io/RepoRacer/reporacer-demo-poster.png" style="width:100%;border-radius:14px;border:1px solid rgba(125, 211, 252, 0.25);box-shadow:0 20px 60px rgba(2, 6, 23, 0.24);">
   <source src="https://habrielstark.github.io/RepoRacer/reporacer-demo.webm" type="video/webm" />
   <a href="https://habrielstark.github.io/RepoRacer/reporacer-demo.gif">Watch the RepoRacer demo GIF.</a>
