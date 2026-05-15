@@ -38,7 +38,7 @@ RepoRacer is not a synthetic prompt leaderboard. It benchmarks agent CLIs agains
 
 RepoRacer turns commits into benchmark lanes: mined tasks, isolated worktrees, agent commands, tests, risk scanning, score composition, and a static report you can inspect or publish.
 
-![RepoRacer terminal demo](assets/terminal-demo.svg)
+![RepoRacer terminal demo](assets/terminal-demo.png)
 
 ## What It Does
 

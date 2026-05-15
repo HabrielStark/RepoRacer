@@ -29,6 +29,6 @@ features:
 
 <img src="/architecture-pipeline.png" alt="RepoRacer architecture pipeline visualization" style="width:100%;border-radius:14px;border:1px solid rgba(125, 211, 252, 0.25);box-shadow:0 18px 54px rgba(2, 6, 23, 0.22);" />
 
-![Terminal demo](../assets/terminal-demo.svg)
+![Terminal demo](../assets/terminal-demo.png)
 
-![Report demo](../assets/report-demo.svg)
+![Report demo](../assets/report-demo.png)

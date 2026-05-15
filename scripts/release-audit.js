@@ -42,7 +42,9 @@ const requiredFiles = [
   "scripts/generate-third-party-notices.js",
   "assets/reporacer-hero.png",
   "assets/architecture-pipeline.png",
-  "assets/social-preview.png"
+  "assets/social-preview.png",
+  "assets/terminal-demo.png",
+  "assets/report-demo.png"
 ];
 const requiredPackedFiles = [
   "dist/cli.js",
@@ -65,7 +67,8 @@ const requiredPackedFiles = [
   "assets/reporacer-hero.png",
   "assets/architecture-pipeline.png",
   "assets/social-preview.png",
-  "assets/social-preview.svg",
+  "assets/terminal-demo.png",
+  "assets/report-demo.png",
   "docs/public/reporacer-hero.png",
   "docs/public/architecture-pipeline.png",
   "docs/public/social-preview.png",
