@@ -12,6 +12,12 @@ RepoRacer turns your own Git history into a private benchmark for Codex, Claude,
 
 ![RepoRacer agent benchmark race visualization](assets/reporacer-hero.png)
 
+## Demo
+
+![RepoRacer demo: benchmark agent CLIs on real repository tasks](assets/reporacer-demo.gif)
+
+[Watch the high-quality WebM demo](assets/reporacer-demo.webm) or open the [live demo site](https://habrielstark.github.io/RepoRacer/).
+
 ## Install
 
 ```bash

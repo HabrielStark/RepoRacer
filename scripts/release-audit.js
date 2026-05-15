@@ -44,7 +44,13 @@ const requiredFiles = [
   "assets/architecture-pipeline.png",
   "assets/social-preview.png",
   "assets/terminal-demo.png",
-  "assets/report-demo.png"
+  "assets/report-demo.png",
+  "assets/reporacer-demo.webm",
+  "assets/reporacer-demo.gif",
+  "assets/reporacer-demo-poster.png",
+  "docs/public/reporacer-demo.webm",
+  "docs/public/reporacer-demo.gif",
+  "docs/public/reporacer-demo-poster.png"
 ];
 const requiredPackedFiles = [
   "dist/cli.js",
@@ -69,9 +75,15 @@ const requiredPackedFiles = [
   "assets/social-preview.png",
   "assets/terminal-demo.png",
   "assets/report-demo.png",
+  "assets/reporacer-demo.webm",
+  "assets/reporacer-demo.gif",
+  "assets/reporacer-demo-poster.png",
   "docs/public/reporacer-hero.png",
   "docs/public/architecture-pipeline.png",
   "docs/public/social-preview.png",
+  "docs/public/reporacer-demo.webm",
+  "docs/public/reporacer-demo.gif",
+  "docs/public/reporacer-demo-poster.png",
   "examples/buggy-todo-app/scripts/create-history.cjs",
   "docs/index.md",
   "docs/.vitepress/config.mts"
@@ -316,7 +328,14 @@ function findForbiddenWorkspaceFiles(dir) {
 
 function findGithubBrokenRootImageRefs() {
   const docsDir = "docs";
-  const publicImageNames = ["reporacer-hero.png", "architecture-pipeline.png", "social-preview.png"];
+  const publicImageNames = [
+    "reporacer-hero.png",
+    "architecture-pipeline.png",
+    "social-preview.png",
+    "reporacer-demo.webm",
+    "reporacer-demo.gif",
+    "reporacer-demo-poster.png"
+  ];
   const rootImagePattern = new RegExp(
     `(?:src=["']|src:\\s*)/(${publicImageNames.map(escapeRegex).join("|")})(?:["']|\\s|$)`,
     "g"
