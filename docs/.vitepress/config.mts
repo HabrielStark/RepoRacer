@@ -1,11 +1,14 @@
 import { defineConfig } from "vitepress";
 
+const siteBase = "/RepoRacer/";
+
 export default defineConfig({
   base: "/RepoRacer/",
   title: "RepoRacer",
   description: "Benchmark AI coding agents on your own repository using real tasks mined from git history.",
   cleanUrls: true,
   head: [
+    ["link", { rel: "icon", type: "image/svg+xml", href: `${siteBase}logo.svg` }],
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { property: "og:title", content: "RepoRacer" }],
     [
