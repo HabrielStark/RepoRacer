@@ -6,6 +6,7 @@ import path from "node:path";
 import process from "node:process";
 
 const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
+const commandTimeoutMs = 180_000;
 const tempDir = mkdtempSync(path.join(tmpdir(), "reporacer-packed-cli-"));
 let tarballPath = null;
 
@@ -74,7 +75,7 @@ function run(command, args, cwd) {
     cwd,
     encoding: "utf8",
     shell: false,
-    timeout: 60_000,
+    timeout: commandTimeoutMs,
     windowsHide: true
   });
   return {
