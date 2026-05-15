@@ -1,6 +1,6 @@
 # Architecture
 
-<img src="https://habrielstark.github.io/RepoRacer/architecture-pipeline.png" alt="RepoRacer architecture pipeline visualization" style="width:100%;border-radius:14px;border:1px solid rgba(125, 211, 252, 0.25);box-shadow:0 18px 54px rgba(2, 6, 23, 0.22);" />
+<a href="https://habrielstark.github.io/RepoRacer/architecture-pipeline.png" aria-label="Open RepoRacer architecture pipeline visualization"><img src="https://habrielstark.github.io/RepoRacer/architecture-pipeline.png" alt="RepoRacer architecture pipeline visualization" style="width:100%;border-radius:14px;border:1px solid rgba(125, 211, 252, 0.25);box-shadow:0 18px 54px rgba(2, 6, 23, 0.22);" /></a>
 
 The benchmark pipeline is intentionally linear: Git history becomes tasks, tasks become isolated worktrees, agents produce patches, tests and risk checks validate them, and the scorer turns the evidence into a static report.
 
