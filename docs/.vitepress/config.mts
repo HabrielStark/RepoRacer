@@ -1,6 +1,7 @@
 import { defineConfig } from "vitepress";
 
 export default defineConfig({
+  base: "/RepoRacer/",
   title: "RepoRacer",
   description: "Benchmark AI coding agents on your own repository using real tasks mined from git history.",
   cleanUrls: true,

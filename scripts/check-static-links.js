@@ -4,6 +4,7 @@ import path from "node:path";
 import process from "node:process";
 
 const root = path.resolve(process.argv[2] ?? ".reporacer-demo-site");
+const staticBases = readStaticBases();
 
 if (!existsSync(root)) {
   process.stderr.write(`Static site directory not found: ${root}\n`);
@@ -25,11 +26,9 @@ for (const filePath of htmlFiles) {
     const cleanUrl = url.split("#")[0].split("?")[0];
     if (cleanUrl.length === 0) continue;
 
-    const target = cleanUrl.startsWith("/")
-      ? path.join(root, cleanUrl.slice(1))
-      : path.resolve(path.dirname(filePath), cleanUrl);
+    const targets = resolveTargets(filePath, cleanUrl);
 
-    if (!resolvesToExistingFile(target)) {
+    if (!targets.some((target) => resolvesToExistingFile(target))) {
       missing.push(`${path.relative(root, filePath)} -> ${url}`);
     }
   }
@@ -62,4 +61,40 @@ function resolvesToExistingFile(target) {
   if (existsSync(`${target}.html`)) return true;
   if (existsSync(path.join(target, "index.html"))) return true;
   return false;
+}
+
+function resolveTargets(filePath, cleanUrl) {
+  if (!cleanUrl.startsWith("/")) {
+    return [path.resolve(path.dirname(filePath), cleanUrl)];
+  }
+
+  const targets = [path.join(root, cleanUrl.slice(1))];
+  for (const staticBase of staticBases) {
+    if (cleanUrl.startsWith(staticBase)) {
+      targets.push(path.join(root, cleanUrl.slice(staticBase.length)));
+    }
+  }
+
+  return targets;
+}
+
+function readStaticBases() {
+  const bases = [];
+  const envBase = process.env.REPORACER_STATIC_BASE;
+  if (envBase) bases.push(envBase);
+
+  const vitepressConfig = path.join(process.cwd(), "docs", ".vitepress", "config.mts");
+  if (existsSync(vitepressConfig)) {
+    const source = readFileSync(vitepressConfig, "utf8");
+    const match = source.match(/\bbase:\s*["']([^"']+)["']/);
+    if (match) bases.push(match[1]);
+  }
+
+  return [...new Set(bases.map(normalizeStaticBase).filter(Boolean))];
+}
+
+function normalizeStaticBase(base) {
+  if (!base || base === "/") return null;
+  const withLeadingSlash = base.startsWith("/") ? base : `/${base}`;
+  return withLeadingSlash.endsWith("/") ? withLeadingSlash : `${withLeadingSlash}/`;
 }
