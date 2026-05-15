@@ -162,6 +162,13 @@ for (const [filePath, needle, description] of requiredTextChecks) {
   }
 }
 
+const githubBrokenRootImageRefs = findGithubBrokenRootImageRefs();
+if (githubBrokenRootImageRefs.length === 0) {
+  pass("docs avoid GitHub-broken root image links");
+} else {
+  fail(`docs contain GitHub-broken root image links: ${githubBrokenRootImageRefs.join(", ")}`);
+}
+
 for (const filePath of [".github/workflows/ci.yml", ".github/workflows/release.yml", ".github/workflows/pages.yml"]) {
   const workflowText = readText(filePath);
   const unpinnedActions = [...workflowText.matchAll(/uses:\s+([^\s#]+)/g)]
@@ -305,4 +312,37 @@ function findForbiddenWorkspaceFiles(dir) {
       }
     }
   }
+}
+
+function findGithubBrokenRootImageRefs() {
+  const docsDir = "docs";
+  const publicImageNames = ["reporacer-hero.png", "architecture-pipeline.png", "social-preview.png"];
+  const rootImagePattern = new RegExp(
+    `(?:src=["']|src:\\s*)/(${publicImageNames.map(escapeRegex).join("|")})(?:["']|\\s|$)`,
+    "g"
+  );
+  const hits = [];
+
+  walkDocs(docsDir);
+  return hits;
+
+  function walkDocs(currentDir) {
+    for (const entry of readdirSync(currentDir, { withFileTypes: true })) {
+      const filePath = `${currentDir}/${entry.name}`;
+      if (entry.isDirectory()) {
+        walkDocs(filePath);
+        continue;
+      }
+      if (!entry.name.endsWith(".md")) continue;
+
+      const text = readText(filePath);
+      for (const match of text.matchAll(rootImagePattern)) {
+        hits.push(`${filePath}:/${match[1]}`);
+      }
+    }
+  }
+}
+
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
