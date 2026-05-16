@@ -5,7 +5,9 @@ artifacts/
 *.tgz
 .reporacer-demo-site/
 docs/.vitepress/dist/
-docs/api/
+docs/api/**
+!docs/api/
+!docs/api/index.md
 examples/buggy-todo-app/generated/
 examples/**/__pycache__/
 examples/**/*.pyc

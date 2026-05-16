@@ -48,9 +48,15 @@ const requiredFiles = [
   "assets/reporacer-demo.webm",
   "assets/reporacer-demo.gif",
   "assets/reporacer-demo-poster.png",
+  "assets/reporacer-race-demo.webm",
+  "assets/reporacer-race-demo.gif",
+  "assets/reporacer-race-demo-poster.png",
   "docs/public/reporacer-demo.webm",
   "docs/public/reporacer-demo.gif",
-  "docs/public/reporacer-demo-poster.png"
+  "docs/public/reporacer-demo-poster.png",
+  "docs/public/reporacer-race-demo.webm",
+  "docs/public/reporacer-race-demo.gif",
+  "docs/public/reporacer-race-demo-poster.png"
 ];
 const requiredPackedFiles = [
   "dist/cli.js",
@@ -78,12 +84,18 @@ const requiredPackedFiles = [
   "assets/reporacer-demo.webm",
   "assets/reporacer-demo.gif",
   "assets/reporacer-demo-poster.png",
+  "assets/reporacer-race-demo.webm",
+  "assets/reporacer-race-demo.gif",
+  "assets/reporacer-race-demo-poster.png",
   "docs/public/reporacer-hero.png",
   "docs/public/architecture-pipeline.png",
   "docs/public/social-preview.png",
   "docs/public/reporacer-demo.webm",
   "docs/public/reporacer-demo.gif",
   "docs/public/reporacer-demo-poster.png",
+  "docs/public/reporacer-race-demo.webm",
+  "docs/public/reporacer-race-demo.gif",
+  "docs/public/reporacer-race-demo-poster.png",
   "examples/buggy-todo-app/scripts/create-history.cjs",
   "docs/index.md",
   "docs/.vitepress/config.mts"
@@ -334,7 +346,10 @@ function findGithubBrokenRootImageRefs() {
     "social-preview.png",
     "reporacer-demo.webm",
     "reporacer-demo.gif",
-    "reporacer-demo-poster.png"
+    "reporacer-demo-poster.png",
+    "reporacer-race-demo.webm",
+    "reporacer-race-demo.gif",
+    "reporacer-race-demo-poster.png"
   ];
   const rootImagePattern = new RegExp(
     `(?:src=["']|src:\\s*)/(${publicImageNames.map(escapeRegex).join("|")})(?:["']|\\s|$)`,

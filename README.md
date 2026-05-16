@@ -20,6 +20,10 @@ This end-to-end terminal recording clones RepoRacer, materializes the real `exam
 
 [Watch the high-quality WebM demo](assets/reporacer-demo.webm), open the [GIF fallback](assets/reporacer-demo.gif), or open the [live demo site](https://habrielstark.github.io/RepoRacer/).
 
+The landing page also includes a visual race replay for quick scanning:
+
+[![RepoRacer visual race replay](assets/reporacer-race-demo-poster.png)](assets/reporacer-race-demo.webm)
+
 ## Install
 
 ```bash
