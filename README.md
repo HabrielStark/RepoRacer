@@ -14,11 +14,11 @@ RepoRacer turns your own Git history into a private benchmark for Codex, Claude,
 
 ## Demo
 
-![RepoRacer demo: benchmark agent CLIs on real repository tasks](assets/reporacer-demo.gif)
+[![RepoRacer terminal recording: benchmark agent CLIs on real repository tasks](assets/reporacer-demo-poster.png)](assets/reporacer-demo.webm)
 
-This end-to-end recording starts from a real tiny Node.js `tiny-shop` repository, runs the published `npx --yes reporacer@1.0.0` flow, mines three historical bug-fix commits, races `fake-success` against `fake-noop` with hidden target tests, and opens the generated public HTML report.
+This end-to-end terminal recording clones RepoRacer, materializes the real `examples/buggy-todo-app` repository with ten historical bug-fix commits, runs the published `npx --yes reporacer@1.0.0` flow, mines five hidden-target-test tasks, races `fake-success` against `fake-noop`, and writes the shareable public HTML report.
 
-[Watch the high-quality WebM demo](assets/reporacer-demo.webm) or open the [live demo site](https://habrielstark.github.io/RepoRacer/).
+[Watch the high-quality WebM demo](assets/reporacer-demo.webm), open the [GIF fallback](assets/reporacer-demo.gif), or open the [live demo site](https://habrielstark.github.io/RepoRacer/).
 
 ## Install
 
