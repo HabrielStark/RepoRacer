@@ -49,7 +49,7 @@ Use `reporacer run --public-report`, `report.audience: "public"`, or `reporacer 
 
 ## CI Template
 
-`reporacer ci` writes a GitHub Actions template with `contents: read` permissions, pinned action SHAs, and pinned `reporacer@1.0.0`. It is generated under `.reporacer/` for review before copying into `.github/workflows/`.
+`reporacer ci` writes a GitHub Actions template with `contents: read` permissions, pinned action SHAs, and pinned RepoRacer package version metadata. It is generated under `.reporacer/` for review before copying into `.github/workflows/`.
 
 ## Cleanup
 

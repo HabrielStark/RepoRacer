@@ -75,32 +75,18 @@ const requiredPackedFiles = [
   "scripts/smoke-docker-sandbox.js",
   "scripts/smoke-packed-cli.js",
   "scripts/generate-third-party-notices.js",
-  "assets/logo.svg",
-  "assets/reporacer-hero.png",
-  "assets/architecture-pipeline.png",
-  "assets/social-preview.png",
-  "assets/terminal-demo.png",
-  "assets/report-demo.png",
-  "assets/reporacer-demo.webm",
-  "assets/reporacer-demo.gif",
-  "assets/reporacer-demo-poster.png",
-  "assets/reporacer-race-demo.webm",
-  "assets/reporacer-race-demo.gif",
-  "assets/reporacer-race-demo-poster.png",
-  "docs/public/reporacer-hero.png",
-  "docs/public/architecture-pipeline.png",
-  "docs/public/social-preview.png",
-  "docs/public/reporacer-demo.webm",
-  "docs/public/reporacer-demo.gif",
-  "docs/public/reporacer-demo-poster.png",
-  "docs/public/reporacer-race-demo.webm",
-  "docs/public/reporacer-race-demo.gif",
-  "docs/public/reporacer-race-demo-poster.png",
   "examples/buggy-todo-app/scripts/create-history.cjs",
   "docs/index.md",
   "docs/.vitepress/config.mts"
 ];
-const forbiddenPackedPrefixes = ["docs/.vitepress/dist/", "docs/api/", "examples/buggy-todo-app/generated/"];
+const forbiddenPackedPrefixes = [
+  "assets/",
+  "docs/public/",
+  "docs/.vitepress/dist/",
+  "docs/api/",
+  "examples/buggy-todo-app/generated/"
+];
+const maxPackedSizeBytes = 8 * 1024 * 1024;
 const forbiddenWorkspaceNames = new Set(["__pycache__"]);
 const forbiddenWorkspaceSuffixes = [".pyc"];
 const ignoredWorkspaceDirs = new Set([".git", "node_modules", "dist", "coverage", "artifacts", ".reporacer-demo-site"]);
@@ -226,10 +212,10 @@ if (releaseWorkflow.indexOf("pnpm sbom") < releaseWorkflow.indexOf("npm pack --j
   fail("Release workflow must generate SBOM before npm pack");
 }
 
-if (packageJson.name === "reporacer" && packageJson.version === "1.0.0") {
+if (packageJson.name === "reporacer" && /^\d+\.\d+\.\d+$/.test(packageJson.version)) {
   pass("package name/version are set");
 } else {
-  fail("package name/version are not release-ready");
+  fail("package name/version are not release-ready SemVer");
 }
 
 if (packageJson.author !== undefined && String(packageJson.author).trim().length > 0) {
@@ -281,6 +267,12 @@ if (pack.status !== 0) {
   fail(`npm pack dry-run failed: ${pack.error?.message ?? pack.stderr ?? pack.stdout ?? "unknown error"}`);
 } else {
   const parsed = JSON.parse(pack.stdout.slice(pack.stdout.indexOf("[")));
+  const packageSize = parsed[0].size;
+  if (typeof packageSize === "number" && packageSize <= maxPackedSizeBytes) {
+    pass(`packed package size is ${packageSize} bytes`);
+  } else {
+    fail(`packed package size exceeds ${maxPackedSizeBytes} bytes: ${packageSize ?? "unknown"}`);
+  }
   const files = new Set(parsed[0].files.map((file) => file.path));
   for (const filePath of requiredPackedFiles) {
     if (files.has(filePath)) {

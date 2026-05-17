@@ -35,7 +35,7 @@ import { withBase } from "vitepress";
   <div>
     <p class="rr-kicker">Proof first</p>
     <h2>Watch the real terminal run.</h2>
-    <p>This recording keeps the boring parts in view: clone, generated bug-fix history, `npm test`, `npx --yes reporacer@1.0.0`, `doctor`, task mining, live progress, final scores, and share artifacts.</p>
+    <p>This recording keeps the boring parts in view: clone, generated bug-fix history, `npm test`, `npx --yes reporacer@latest`, `doctor`, task mining, live progress, final scores, and share artifacts.</p>
   </div>
   <video controls muted playsinline :poster="withBase('/reporacer-demo-poster.png')">
     <source :src="withBase('/reporacer-demo.webm')" type="video/webm" />

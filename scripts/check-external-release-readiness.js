@@ -8,18 +8,19 @@ import process from "node:process";
 const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
 const repo = parseGitHubRepository(packageJson.repository?.url ?? "");
 const expectedTag = `v${packageJson.version}`;
+const mode = parseMode(process.argv.slice(2));
 let failed = false;
 
 checkNpmIdentity();
-checkNpmPublishedVersion();
+checkNpmVersionState();
 checkGitHubPages();
-checkReleaseTag();
+checkReleaseTagState();
 checkStrictAgents();
 
 if (failed) {
   process.exitCode = 1;
 } else {
-  process.stdout.write("External release readiness passed.\n");
+  process.stdout.write(`External release ${mode} readiness passed.\n`);
 }
 
 function checkNpmIdentity() {
@@ -31,7 +32,11 @@ function checkNpmIdentity() {
 
   const token = process.env.NPM_TOKEN ?? process.env.NODE_AUTH_TOKEN ?? process.env.REPORACER;
   if (token === undefined || token.trim().length === 0) {
-    fail("npm authentication missing: run npm adduser locally or set NPM_TOKEN/NODE_AUTH_TOKEN/REPORACER");
+    if (mode === "postpublish") {
+      fail("npm authentication missing: run npm adduser locally or set NPM_TOKEN/NODE_AUTH_TOKEN/REPORACER");
+    } else {
+      pass("npm authentication deferred to the release workflow preflight");
+    }
     return;
   }
 
@@ -56,18 +61,32 @@ function checkNpmIdentity() {
   }
 }
 
-function checkNpmPublishedVersion() {
+function checkNpmVersionState() {
   const result = run("npm", ["view", packageJson.name, "version", "--registry", "https://registry.npmjs.org"]);
   if (result.status !== 0) {
-    fail(`npm package ${packageJson.name} is not published or not visible on npm`);
+    if (mode === "postpublish") {
+      fail(`npm package ${packageJson.name} is not published or not visible on npm`);
+    } else {
+      pass(`npm package ${packageJson.name}@${packageJson.version} is not published yet`);
+    }
     return;
   }
 
   const publishedVersion = firstLine(result.output);
-  if (publishedVersion === packageJson.version) {
+  if (mode === "postpublish" && publishedVersion === packageJson.version) {
     pass(`npm package ${packageJson.name}@${publishedVersion} is published`);
-  } else {
+  } else if (mode === "postpublish") {
     fail(`npm package version mismatch: registry has ${publishedVersion}, package.json has ${packageJson.version}`);
+  } else if (compareSemver(packageJson.version, publishedVersion) > 0) {
+    pass(
+      `npm package ${packageJson.name}@${packageJson.version} is ready to publish after registry version ${publishedVersion}`
+    );
+  } else if (publishedVersion === packageJson.version) {
+    fail(
+      `npm package ${packageJson.name}@${packageJson.version} is already published; bump package.json before another release`
+    );
+  } else {
+    fail(`package version ${packageJson.version} is behind registry version ${publishedVersion}`);
   }
 }
 
@@ -140,7 +159,7 @@ function queryGitHubPagesSite() {
   ]);
 }
 
-function checkReleaseTag() {
+function checkReleaseTagState() {
   const result = run("git", ["ls-remote", "origin", "refs/heads/main", `refs/tags/${expectedTag}^{}`]);
   if (result.status !== 0) {
     fail(`unable to read remote main/tag refs: ${firstLine(result.output)}`);
@@ -156,10 +175,16 @@ function checkReleaseTag() {
   );
   const main = refs.get("refs/heads/main");
   const tag = refs.get(`refs/tags/${expectedTag}^{}`);
-  if (main !== undefined && tag !== undefined && main === tag) {
+  if (mode === "postpublish" && main !== undefined && tag !== undefined && main === tag) {
     pass(`${expectedTag} points at remote main ${main}`);
-  } else {
+  } else if (mode === "postpublish") {
     fail(`${expectedTag} must point at remote main; main=${main ?? "missing"} tag=${tag ?? "missing"}`);
+  } else if (tag === undefined) {
+    pass(`${expectedTag} is not published yet`);
+  } else if (main !== undefined && tag === main) {
+    fail(`${expectedTag} already exists at remote main; bump package.json before another release`);
+  } else {
+    fail(`${expectedTag} already exists away from remote main; main=${main ?? "missing"} tag=${tag}`);
   }
 }
 
@@ -173,7 +198,8 @@ function checkStrictAgents() {
 }
 
 function run(command, args) {
-  const result = spawnSync(command, args, {
+  const invocation = commandInvocation(command, args);
+  const result = spawnSync(invocation.command, invocation.args, {
     encoding: "utf8",
     shell: false,
     timeout: 30_000,
@@ -185,10 +211,51 @@ function run(command, args) {
   };
 }
 
+function commandInvocation(command, args) {
+  if (process.platform === "win32" && command === "npm") {
+    return { command: "cmd.exe", args: ["/d", "/c", "npm", ...args] };
+  }
+  return { command, args };
+}
+
+function parseMode(args) {
+  if (args.includes("--postpublish")) {
+    return "postpublish";
+  }
+  if (args.includes("--prepublish")) {
+    return "prepublish";
+  }
+  if (args.some((arg) => arg.startsWith("--"))) {
+    fail(`unknown option: ${args.find((arg) => arg.startsWith("--"))}`);
+  }
+  return "prepublish";
+}
+
 function parseGitHubRepository(value) {
   const match = value.match(/github\.com[:/](?<owner>[^/\s]+)\/(?<repo>[^/\s.]+)(?:\.git)?/i);
   if (match?.groups === undefined) return null;
   return `${match.groups.owner}/${match.groups.repo}`;
+}
+
+function compareSemver(left, right) {
+  const leftParts = parseSemver(left);
+  const rightParts = parseSemver(right);
+  if (leftParts === null || rightParts === null) {
+    fail(`cannot compare non-semver versions: ${left} and ${right}`);
+    return 0;
+  }
+  for (let index = 0; index < 3; index += 1) {
+    if (leftParts[index] !== rightParts[index]) {
+      return leftParts[index] > rightParts[index] ? 1 : -1;
+    }
+  }
+  return 0;
+}
+
+function parseSemver(value) {
+  const match = String(value).match(/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/);
+  if (match === null) return null;
+  return match.slice(1).map((part) => Number(part));
 }
 
 function firstLine(value) {

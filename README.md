@@ -10,28 +10,28 @@ Which AI coding agent is best for your codebase?
 
 RepoRacer turns your own Git history into a private benchmark for Codex, Claude, Gemini, Aider, OpenCode, and any command-line coding agent.
 
-![RepoRacer agent benchmark race visualization](assets/reporacer-hero.png)
+![RepoRacer agent benchmark race visualization](https://habrielstark.github.io/RepoRacer/reporacer-hero.png)
 
 ## Demo
 
-[![RepoRacer terminal recording: benchmark agent CLIs on real repository tasks](assets/reporacer-demo-poster.png)](assets/reporacer-demo.webm)
+[![RepoRacer terminal recording: benchmark agent CLIs on real repository tasks](https://habrielstark.github.io/RepoRacer/reporacer-demo-poster.png)](https://habrielstark.github.io/RepoRacer/reporacer-demo.webm)
 
-This end-to-end terminal recording clones RepoRacer, materializes the real `examples/buggy-todo-app` repository with ten historical bug-fix commits, runs the published `npx --yes reporacer@1.0.0` flow, mines five hidden-target-test tasks, races `fake-success` against `fake-noop`, and writes the shareable public HTML report.
+This end-to-end terminal recording clones RepoRacer, materializes the real `examples/buggy-todo-app` repository with ten historical bug-fix commits, runs the published `npx --yes reporacer@latest` flow, mines five hidden-target-test tasks, races `fake-success` against `fake-noop`, and writes the shareable public HTML report.
 
-[Watch the high-quality WebM demo](assets/reporacer-demo.webm), open the [GIF fallback](assets/reporacer-demo.gif), or open the [live demo site](https://habrielstark.github.io/RepoRacer/).
+[Watch the high-quality WebM demo](https://habrielstark.github.io/RepoRacer/reporacer-demo.webm), open the [GIF fallback](https://habrielstark.github.io/RepoRacer/reporacer-demo.gif), or open the [live demo site](https://habrielstark.github.io/RepoRacer/).
 
 The landing page also includes a visual race replay for quick scanning:
 
-[![RepoRacer visual race replay](assets/reporacer-race-demo-poster.png)](assets/reporacer-race-demo.webm)
+[![RepoRacer visual race replay](https://habrielstark.github.io/RepoRacer/reporacer-race-demo-poster.png)](https://habrielstark.github.io/RepoRacer/reporacer-race-demo.webm)
 
 ## Install
 
 ```bash
-npx --yes reporacer@1.0.0 init
-npx --yes reporacer@1.0.0 doctor
-npx --yes reporacer@1.0.0 tasks --tasks 5
-npx --yes reporacer@1.0.0 run --agents fake-success,fake-noop --tasks 2
-npx --yes reporacer@1.0.0 open
+npx --yes reporacer@latest init
+npx --yes reporacer@latest doctor
+npx --yes reporacer@latest tasks --tasks 5
+npx --yes reporacer@latest run --agents fake-success,fake-noop --tasks 2
+npx --yes reporacer@latest open
 ```
 
 Your git history is the benchmark.
@@ -46,11 +46,11 @@ RepoRacer is not a synthetic prompt leaderboard. It benchmarks agent CLIs agains
 
 ## Visual Overview
 
-![RepoRacer architecture pipeline visualization](assets/architecture-pipeline.png)
+![RepoRacer architecture pipeline visualization](https://habrielstark.github.io/RepoRacer/architecture-pipeline.png)
 
 RepoRacer turns commits into benchmark lanes: mined tasks, isolated worktrees, agent commands, tests, risk scanning, score composition, and a static report you can inspect or publish.
 
-![RepoRacer terminal demo](assets/terminal-demo.png)
+![RepoRacer terminal demo](https://habrielstark.github.io/RepoRacer/terminal-demo.png)
 
 ## What It Does
 
@@ -303,7 +303,7 @@ Public artifacts still include benchmark metadata. Review them before publishing
 
 ## CI And Schema
 
-`reporacer ci` writes `.reporacer/github-action.yml`, a GitHub Actions workflow template with least-privilege `contents: read` permissions, pinned action SHAs, and pinned `reporacer@1.0.0`. Set `ci.generateGitHubAction` to false to disable generation.
+`reporacer ci` writes `.reporacer/github-action.yml`, a GitHub Actions workflow template with least-privilege `contents: read` permissions, pinned action SHAs, and pinned RepoRacer package version metadata. Set `ci.generateGitHubAction` to false to disable generation.
 
 `reporacer schema` writes `.reporacer/config.schema.json` for strict editor validation and config review.
 
@@ -365,12 +365,15 @@ pnpm sbom
 pnpm notices
 pnpm release:audit
 pnpm release:external-audit
+pnpm release:external-audit --postpublish
 npm pack --json --dry-run --ignore-scripts
 ```
 
 Coverage thresholds are enforced in CI: 78% statements, 56% branches, 59% functions, and 85% lines. Raise them only after adding tests that keep the threshold green on Windows, macOS, and Linux.
 
-`pnpm release:external-audit` checks the owner-controlled public-release surfaces that local CI cannot complete by itself: npm authentication, the published npm version, GitHub Pages status, remote tag alignment, and strict Codex/Claude/Gemini/Aider/OpenCode CLI availability. It is expected to fail on machines without the owner npm/GitHub credentials or without every provider CLI installed.
+`pnpm release:external-audit` runs prepublish checks for public release surfaces: npm version availability, GitHub Pages status, remote tag availability, and strict Codex/Claude/Gemini/Aider/OpenCode CLI availability. Local npm authentication is deferred to the release workflow preflight, which blocks before `npm publish` if the token is missing.
+
+`pnpm release:external-audit --postpublish` is stricter and must pass after publishing: npm authentication must work, the registry version must equal `package.json`, and the immutable release tag must point at remote `main`.
 
 ## Dependency Pin Summary
 
@@ -379,8 +382,8 @@ Coverage thresholds are enforced in CI: 78% statements, 56% branches, 59% functi
 - `zod@4.4.3`: config validation; source checked with `npm view zod version`; risk low; breaking changes: no for current schema usage.
 - `chalk@5.6.2`: terminal color; source checked with `npm view chalk version`; risk low; breaking changes: ESM-only, project is ESM.
 - `open@11.0.0`: opens local report; source checked with `npm view open version`; risk low; breaking changes: ESM-only, project is ESM.
-- `typescript@6.0.3`, `vitest@4.1.6`, `tsx@4.21.0`, `@types/node@25.6.2`: build and test tooling pinned from npm registry checks; risk low for local development.
-- `eslint@10.3.0`, `typescript-eslint@8.59.3`, `prettier@3.8.3`, `@vitest/coverage-v8@4.1.6`, `typedoc@0.28.19`, `typedoc-plugin-markdown@4.11.0`, `vitepress@1.6.4`, `husky@9.1.7`, `@commitlint/*@21.0.0`: OSS automation, docs, coverage, and local quality gates pinned from npm registry checks; risk low-to-medium because they run in development and CI.
+- `typescript@6.0.3`, `vitest@4.1.6`, `tsx@4.22.1`, `@types/node@25.8.0`: build and test tooling pinned from npm registry checks; risk low for local development.
+- `eslint@10.4.0`, `typescript-eslint@8.59.3`, `prettier@3.8.3`, `@vitest/coverage-v8@4.1.6`, `typedoc@0.28.19`, `typedoc-plugin-markdown@4.11.0`, `vitepress@1.6.4`, `vite@6.4.2`, `husky@9.1.7`, `@commitlint/*@21.0.1`: OSS automation, docs, coverage, and local quality gates pinned from npm registry checks; risk low-to-medium because they run in development and CI. `vite@6.4.2` is held for VitePress 1.x compatibility while still satisfying Vitest's `^6 || ^7 || ^8` peer range.
 
 GitHub workflows pin checked SHAs for `actions/checkout`, `actions/setup-node`, `actions/upload-pages-artifact`, `actions/deploy-pages`, `codecov/codecov-action`, and `softprops/action-gh-release`.
 

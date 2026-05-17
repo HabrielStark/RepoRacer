@@ -16,7 +16,7 @@ const program = new Command();
 program
     .name("reporacer")
     .description("Benchmark AI coding agents on your own repository using real tasks mined from git history.")
-    .version("1.0.0")
+    .version("1.0.1")
     .action(async () => {
     const summary = await runRepoRacer({ progress: true });
     logger.info(renderRunSummary(summary));

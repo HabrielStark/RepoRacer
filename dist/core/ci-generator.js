@@ -1,7 +1,7 @@
 import path from "node:path";
 import { repoRacerPath } from "../utils/paths.js";
 import { ensureDir, writeGeneratedFile } from "./fs-safe.js";
-const REPORACER_CI_VERSION = "1.0.0";
+const REPORACER_CI_VERSION = "1.0.1";
 export function renderGitHubAction(config) {
     const agents = config.ci.defaultAgents.join(",");
     const tasks = String(config.ci.defaultTasks);

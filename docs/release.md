@@ -9,11 +9,12 @@ RepoRacer follows SemVer after `1.0.0`.
 2. Run `pnpm sbom` and inspect `artifacts/reporacer.cdx.json`.
 3. Run `pnpm notices` and inspect `THIRD_PARTY_NOTICES.md`.
 4. Run `pnpm release:audit` and require a clean pass.
-5. Run `pnpm release:external-audit` on the owner release machine after npm auth, Pages, and official provider CLIs are configured.
+5. Run `pnpm release:external-audit` before tagging. It must show that the package version is newer than npm, GitHub Pages is live, the release tag is still unused, and official provider CLIs are version-detectable.
 6. Confirm `npm pack --json --dry-run --ignore-scripts` contains only intended files.
 7. Update `CHANGELOG.md`.
 8. Tag `vX.Y.Z`, or run the manual release workflow with `version` set to exactly `X.Y.Z`.
 9. Let `.github/workflows/release.yml` publish with npm provenance, push the GHCR Docker image, attach the npm tarball, and attach the CycloneDX SBOM.
+10. Run `pnpm release:external-audit --postpublish` after publication. It must confirm npm auth, the published npm version, Pages, tag-to-main alignment, and strict provider CLI availability.
 
 `npm sbom` is not used in this pnpm project because npm's SBOM command validates the pnpm virtual store as if it were an npm install tree and reports false missing/invalid dependency errors. `pnpm sbom` uses `pnpm licenses list --json` and writes a CycloneDX 1.5 document without adding a third-party SBOM generator dependency.
 
@@ -37,11 +38,13 @@ These steps require owner-controlled credentials and cannot be completed by a cl
 
 1. Create an npm automation or granular access token for the package owner account and save it as the repository secret `NPM_TOKEN`, `NODE_AUTH_TOKEN`, or `REPORACER`.
 2. Enable GitHub Pages in repository settings with source set to GitHub Actions.
-3. Run the release workflow for `1.0.0`, or push an immutable `v1.0.0` tag after the secret is configured.
-4. Confirm `npm view reporacer version` returns `1.0.0`.
+3. Run the release workflow for the current `package.json` version, or push an immutable matching `vX.Y.Z` tag after the secret is configured.
+4. Confirm `npm view reporacer version` returns the current `package.json` version.
 5. Confirm `https://habrielstark.github.io/RepoRacer/` serves the demo site.
-6. Run `pnpm release:external-audit` on a machine with npm auth and all five provider CLIs installed.
+6. Run `pnpm release:external-audit --postpublish` on a machine with npm auth and all five provider CLIs installed.
 
 ## External Release Audit
 
-`pnpm release:external-audit` intentionally fails until all owner-controlled release surfaces are real: npm authentication through `NPM_TOKEN`, `NODE_AUTH_TOKEN`, `REPORACER`, or a local npm login, the published npm version, GitHub Pages availability, remote tag alignment, and strict provider CLI installation.
+`pnpm release:external-audit` runs prepublish checks: npm version availability, GitHub Pages availability, unused release tag verification, and strict provider CLI installation. Local npm auth is deferred to the release workflow preflight, which blocks before `npm publish` if the token is missing.
+
+`pnpm release:external-audit --postpublish` intentionally fails until all owner-controlled release surfaces are real: npm authentication through `NPM_TOKEN`, `NODE_AUTH_TOKEN`, `REPORACER`, or a local npm login, the published npm version, GitHub Pages availability, remote tag alignment, and strict provider CLI installation.

@@ -3,7 +3,7 @@ import { RepoRacerConfig } from "../schemas/types.js";
 import { repoRacerPath } from "../utils/paths.js";
 import { ensureDir, writeGeneratedFile } from "./fs-safe.js";
 
-const REPORACER_CI_VERSION = "1.0.0";
+const REPORACER_CI_VERSION = "1.0.1";
 
 export function renderGitHubAction(config: RepoRacerConfig): string {
   const agents = config.ci.defaultAgents.join(",");

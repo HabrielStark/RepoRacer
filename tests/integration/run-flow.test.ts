@@ -63,7 +63,7 @@ describe("RepoRacer integration flow", () => {
     const ci = await fs.readFile(ciPath, "utf8");
     expect(ci).toContain("RepoRacer");
     expect(ci).toContain("actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5");
-    expect(ci).toContain("npx --yes reporacer@1.0.0");
+    expect(ci).toContain("npx --yes reporacer@1.0.1");
 
     const schemaPath = await generateConfigSchema(repo.root);
     const schema = await fs.readFile(schemaPath, "utf8");

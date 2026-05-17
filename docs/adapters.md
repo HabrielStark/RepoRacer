@@ -57,7 +57,7 @@ RepoRacer does not add provider-specific network calls. Provider CLIs decide wha
 
 ## Verified CLI Versions
 
-The 1.0.0 release verifier has been checked against these installed CLI versions:
+The 1.x release verifier has been checked against these installed CLI versions:
 
 - Codex CLI: `codex-cli 0.129.0`.
 - Claude Code: `2.1.92`.

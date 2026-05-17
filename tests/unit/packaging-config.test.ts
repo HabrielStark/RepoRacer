@@ -61,7 +61,7 @@ describe("packaging and config contracts", () => {
     for (const exportName of expectedRuntimeExports) {
       expect(api[exportName], exportName).toBeDefined();
     }
-    expect(version.stdout.trim()).toBe("1.0.0");
+    expect(version.stdout.trim()).toBe("1.0.1");
     expect(help.stdout).toContain("ci");
     expect(help.stdout).toContain("share");
     expect(help.stdout).toContain("schema");

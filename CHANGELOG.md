@@ -1,6 +1,14 @@
 # Changelog
 
-This changelog records the local workspace state. The public npm/GitHub release is pending repository owner and package owner setup.
+This changelog records the local workspace state and published releases.
+
+## 1.0.1 - 2026-05-17
+
+- Prepared the next patch release after the published `1.0.0` tag by bumping package and CLI version metadata to `1.0.1`.
+- Hardened the external release audit for Windows npm shims and split it into prepublish and postpublish checks so local release readiness does not falsely fail before npm publication.
+- Slimmed the npm package by keeping large launch media in the repository and GitHub Pages site instead of duplicating WebM/GIF/PNG assets in the CLI tarball.
+- Added a package-size release audit so future media additions cannot silently bloat the npm distribution.
+- Refreshed safe dev-tool patch pins and made `vite@6.4.2` explicit for the VitePress 1.x and Vitest peer graph.
 
 ## 1.0.0 - 2026-05-12
 

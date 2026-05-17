@@ -1,6 +1,6 @@
 {
   "name": "reporacer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Benchmark AI coding agents on your own repository using real tasks mined from git history.",
   "type": "module",
   "bin": {
@@ -29,7 +29,6 @@
     "THIRD_PARTY_NOTICES.md",
     "CHANGELOG.md",
     ".env.example",
-    "assets",
     "examples/config.json",
     "examples/buggy-todo-app/README.md",
     "examples/buggy-todo-app/scripts",
@@ -56,8 +55,7 @@
     "scripts/smoke-packed-cli.js",
     "scripts/smoke-docker-sandbox.js",
     "docs/*.md",
-    "docs/.vitepress/config.mts",
-    "docs/public"
+    "docs/.vitepress/config.mts"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -131,19 +129,20 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@commitlint/cli": "21.0.0",
-    "@commitlint/config-conventional": "21.0.0",
+    "@commitlint/cli": "21.0.1",
+    "@commitlint/config-conventional": "21.0.1",
     "@eslint/js": "10.0.1",
-    "@types/node": "25.6.2",
+    "@types/node": "25.8.0",
     "@vitest/coverage-v8": "4.1.6",
-    "eslint": "10.3.0",
+    "eslint": "10.4.0",
     "husky": "9.1.7",
     "prettier": "3.8.3",
-    "tsx": "4.21.0",
+    "tsx": "4.22.1",
     "typedoc": "0.28.19",
     "typedoc-plugin-markdown": "4.11.0",
     "typescript": "6.0.3",
     "typescript-eslint": "8.59.3",
+    "vite": "6.4.2",
     "vitepress": "1.6.4",
     "vitest": "4.1.6"
   }
