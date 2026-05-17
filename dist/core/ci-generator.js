@@ -1,7 +1,9 @@
 import path from "node:path";
+import { createRequire } from "node:module";
 import { repoRacerPath } from "../utils/paths.js";
 import { ensureDir, writeGeneratedFile } from "./fs-safe.js";
-const REPORACER_CI_VERSION = "1.0.1";
+const require = createRequire(import.meta.url);
+const packageJson = require("../../package.json");
 export function renderGitHubAction(config) {
     const agents = config.ci.defaultAgents.join(",");
     const tasks = String(config.ci.defaultTasks);
@@ -31,7 +33,7 @@ jobs:
           node-version: 20
 
       - name: Run RepoRacer
-        run: npx --yes reporacer@${REPORACER_CI_VERSION} run --agents ${shellSafe(agents)} --tasks ${tasks}
+        run: npx --yes reporacer@${packageJson.version} run --agents ${shellSafe(agents)} --tasks ${tasks}
 
       - name: Upload RepoRacer report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { Command } from "commander";
+import { createRequire } from "node:module";
 import { cleanRepoRacer } from "./commands/clean.js";
 import { generateCiTemplate } from "./commands/ci.js";
 import { runDoctor } from "./commands/doctor.js";
@@ -13,12 +14,14 @@ import { renderTasks, selectTasks } from "./commands/tasks.js";
 import { logger } from "./core/logger.js";
 import { toErrorMessage } from "./utils/errors.js";
 
+const require = createRequire(import.meta.url);
+const packageJson = require("../package.json") as { version: string };
 const program = new Command();
 
 program
   .name("reporacer")
   .description("Benchmark AI coding agents on your own repository using real tasks mined from git history.")
-  .version("1.0.1")
+  .version(packageJson.version)
   .action(async () => {
     const summary = await runRepoRacer({ progress: true });
     logger.info(renderRunSummary(summary));

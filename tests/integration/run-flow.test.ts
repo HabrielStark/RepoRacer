@@ -12,6 +12,9 @@ import { generateShareArtifacts } from "../../src/commands/share.js";
 import { selectTasks } from "../../src/commands/tasks.js";
 import { createBenchmarkFixtureRepo, createHiddenTestsFixtureRepo, git } from "../helpers/git-fixture.js";
 
+const repoRoot = path.resolve(import.meta.dirname, "..", "..");
+const packageJson = JSON.parse(await fs.readFile(path.join(repoRoot, "package.json"), "utf8")) as { version: string };
+
 describe("RepoRacer integration flow", () => {
   it("initializes config, mines tasks, runs fake agents, writes report, and cleans generated data", async () => {
     const repo = await createBenchmarkFixtureRepo();
@@ -63,7 +66,7 @@ describe("RepoRacer integration flow", () => {
     const ci = await fs.readFile(ciPath, "utf8");
     expect(ci).toContain("RepoRacer");
     expect(ci).toContain("actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5");
-    expect(ci).toContain("npx --yes reporacer@1.0.1");
+    expect(ci).toContain(`npx --yes reporacer@${packageJson.version}`);
 
     const schemaPath = await generateConfigSchema(repo.root);
     const schema = await fs.readFile(schemaPath, "utf8");

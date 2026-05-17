@@ -8,8 +8,12 @@ import process from "node:process";
 const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
 const repo = parseGitHubRepository(packageJson.repository?.url ?? "");
 const expectedTag = `v${packageJson.version}`;
-const mode = parseMode(process.argv.slice(2));
 let failed = false;
+const mode = parseMode(process.argv.slice(2));
+
+if (failed) {
+  process.exit(1);
+}
 
 checkNpmIdentity();
 checkNpmVersionState();
@@ -160,7 +164,13 @@ function queryGitHubPagesSite() {
 }
 
 function checkReleaseTagState() {
-  const result = run("git", ["ls-remote", "origin", "refs/heads/main", `refs/tags/${expectedTag}^{}`]);
+  const result = run("git", [
+    "ls-remote",
+    "origin",
+    "refs/heads/main",
+    `refs/tags/${expectedTag}`,
+    `refs/tags/${expectedTag}^{}`
+  ]);
   if (result.status !== 0) {
     fail(`unable to read remote main/tag refs: ${firstLine(result.output)}`);
     return;
@@ -174,7 +184,7 @@ function checkReleaseTagState() {
       .map(([sha, ref]) => [ref, sha])
   );
   const main = refs.get("refs/heads/main");
-  const tag = refs.get(`refs/tags/${expectedTag}^{}`);
+  const tag = refs.get(`refs/tags/${expectedTag}^{}`) ?? refs.get(`refs/tags/${expectedTag}`);
   if (mode === "postpublish" && main !== undefined && tag !== undefined && main === tag) {
     pass(`${expectedTag} points at remote main ${main}`);
   } else if (mode === "postpublish") {
@@ -219,16 +229,21 @@ function commandInvocation(command, args) {
 }
 
 function parseMode(args) {
-  if (args.includes("--postpublish")) {
-    return "postpublish";
+  let selectedMode;
+  for (const arg of args) {
+    if (arg === "--postpublish" || arg === "--prepublish") {
+      const nextMode = arg === "--postpublish" ? "postpublish" : "prepublish";
+      if (selectedMode !== undefined && selectedMode !== nextMode) {
+        fail("conflicting options: --prepublish and --postpublish");
+        return selectedMode;
+      }
+      selectedMode = nextMode;
+    } else {
+      fail(`unknown option: ${arg}`);
+      return selectedMode;
+    }
   }
-  if (args.includes("--prepublish")) {
-    return "prepublish";
-  }
-  if (args.some((arg) => arg.startsWith("--"))) {
-    fail(`unknown option: ${args.find((arg) => arg.startsWith("--"))}`);
-  }
-  return "prepublish";
+  return selectedMode ?? "prepublish";
 }
 
 function parseGitHubRepository(value) {

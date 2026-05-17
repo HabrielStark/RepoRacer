@@ -287,6 +287,18 @@ import { withBase } from "vitepress";
     font-size: 19px;
   }
 
+  .rr-stats {
+    display: grid;
+    width: min(100%, 220px);
+    margin-top: 36px;
+  }
+
+  .rr-stats span {
+    width: 100%;
+    min-width: 0;
+    border-radius: 14px;
+  }
+
   .rr-grid {
     grid-template-columns: 1fr;
   }

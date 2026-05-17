@@ -9,6 +9,9 @@ This changelog records the local workspace state and published releases.
 - Slimmed the npm package by keeping large launch media in the repository and GitHub Pages site instead of duplicating WebM/GIF/PNG assets in the CLI tarball.
 - Added a package-size release audit so future media additions cannot silently bloat the npm distribution.
 - Refreshed safe dev-tool patch pins and made `vite@6.4.2` explicit for the VitePress 1.x and Vitest peer graph.
+- Removed duplicated hard-coded package version values from CLI/versioned CI template generation.
+- Hardened external release audit argument handling and release-tag lookup for both lightweight and annotated tags.
+- Fixed mobile docs hero metrics so benchmark signal chips no longer overflow narrow screens.
 
 ## 1.0.0 - 2026-05-12
 

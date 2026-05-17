@@ -6,6 +6,7 @@ import { parseConfig } from "../../src/core/config.js";
 import { renderConfigJsonSchema } from "../../src/core/schema-generator.js";
 
 const repoRoot = path.resolve(import.meta.dirname, "..", "..");
+const packageJson = JSON.parse(await fs.readFile(path.join(repoRoot, "package.json"), "utf8")) as { version: string };
 
 const expectedRuntimeExports = [
   "buildJudgePrompt",
@@ -61,7 +62,7 @@ describe("packaging and config contracts", () => {
     for (const exportName of expectedRuntimeExports) {
       expect(api[exportName], exportName).toBeDefined();
     }
-    expect(version.stdout.trim()).toBe("1.0.1");
+    expect(version.stdout.trim()).toBe(packageJson.version);
     expect(help.stdout).toContain("ci");
     expect(help.stdout).toContain("share");
     expect(help.stdout).toContain("schema");
