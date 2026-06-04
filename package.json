@@ -118,7 +118,7 @@
   "pnpm": {
     "overrides": {
       "esbuild": "0.25.12",
-      "vite": "8.0.13"
+      "vite": "8.0.16"
     }
   },
   "dependencies": {
@@ -129,21 +129,21 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@commitlint/cli": "21.0.1",
-    "@commitlint/config-conventional": "21.0.1",
+    "@commitlint/cli": "21.0.2",
+    "@commitlint/config-conventional": "21.0.2",
     "@eslint/js": "10.0.1",
     "@types/node": "25.9.1",
-    "@vitest/coverage-v8": "4.1.7",
-    "eslint": "10.4.0",
+    "@vitest/coverage-v8": "4.1.8",
+    "eslint": "10.4.1",
     "husky": "9.1.7",
     "prettier": "3.8.3",
-    "tsx": "4.22.3",
+    "tsx": "4.22.4",
     "typedoc": "0.28.19",
-    "typedoc-plugin-markdown": "4.11.0",
+    "typedoc-plugin-markdown": "4.12.0",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.59.4",
-    "vite": "8.0.13",
+    "typescript-eslint": "8.60.1",
+    "vite": "8.0.16",
     "vitepress": "1.6.4",
-    "vitest": "4.1.7"
+    "vitest": "4.1.8"
   }
 }
